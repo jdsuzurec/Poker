@@ -10,8 +10,8 @@ import java.util.Random;
 //スレッド部（各クライアントに応じて）
 class ClientProcThread extends Thread {
     private int number;//自分の番号
-    private Socket incoming;
-    private InputStreamReader myIsr;
+    // private Socket incoming;
+    // private InputStreamReader myIsr;
     private BufferedReader myIn;
     private PrintWriter myOut;
     private String myName;//接続者の名前
@@ -19,8 +19,8 @@ class ClientProcThread extends Thread {
 
     public ClientProcThread(int n, Socket i, InputStreamReader isr, BufferedReader in, PrintWriter out) {
         number = n;
-        incoming = i;
-        myIsr = isr;
+        // incoming = i;
+        // myIsr = isr;
         myIn = in;
         myOut = out;
     }
@@ -478,7 +478,7 @@ class Poker_Server{
 
         try {
             System.out.println("The server has launched!");
-            ServerSocket server = new ServerSocket(1000);//10000番ポートを利用する
+            ServerSocket server = new ServerSocket(10000);//10000番ポートを利用する
             while (true) {
                 incoming[n] = server.accept();
                 flag[n] = true;

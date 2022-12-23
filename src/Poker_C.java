@@ -147,20 +147,19 @@ public class Poker_C extends Frame implements ActionListener {
         });
 
         //サーバに接続する
-        Socket socket = null;
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            String host = address.getHostAddress();
-            socket = new Socket(host, 15000);
-        } catch (UnknownHostException e) {
-            System.err.println("ホストの IP アドレスが判定できません: " + e);
-        } catch (IOException e) {
-            System.err.println("エラーが発生しました: " + e);
-        }
-        MesgRecvThread mrt = new MesgRecvThread(socket, myName);//受信用のスレッドを作成する
-        mrt.start();//スレッドを動かす（Runが動く）
-
-
+		Socket socket = null;
+		try {
+			//"localhost"は，自分内部への接続．localhostを接続先のIP Address（"133.42.155.201"形式）に設定すると他のPCのサーバと通信できる
+			//10000はポート番号．IP Addressで接続するPCを決めて，ポート番号でそのPC上動作するプログラムを特定する
+			socket = new Socket("localhost", 10000);
+		} catch (UnknownHostException e) {
+			System.err.println("ホストの IP アドレスが判定できません: " + e);
+		} catch (IOException e) {
+			System.err.println("エラーが発生しました: " + e);
+		}
+		
+		MesgRecvThread mrt = new MesgRecvThread(socket, myName);
+		mrt.start();
     }//end of コンストラクタ
 
 
