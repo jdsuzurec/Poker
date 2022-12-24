@@ -5,15 +5,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 
+/*
+* <summary>
+* 複数クライアントからの接続を待ち受け、通信処理を行うスレッドを作成して起動
+* </summary>
+*/
 public class Server {
     final static int PORT_NUMBER = 10000;
     final static int MAX_CONNECTION = 2;
 
-    /*
-     * <summary>
-     * 複数クライアントからの接続を待ち受け、通信処理を行うスレッドを作成して起動
-     * </summary>
-     */
     public static void main(String[] args) {
         // TCPポートを指定してサーバソケットを作成
         ServerSocket serverSocket;
@@ -57,8 +57,6 @@ class ServerThread extends Thread {
     private int number;
     private String userName;
     private Socket socket;
-    private BufferedReader in; // クライアントからの受取用
-    private PrintWriter out; // クライアントへの送信用
 
     public ServerThread(Socket socket, int number) {
         this.socket = socket;
@@ -68,8 +66,10 @@ class ServerThread extends Thread {
 
     public void run() {
         try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
+            // クライアントからの受取用
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            // クライアントへの送信用
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             // 無限ループでソケットへの入力を監視する
             while (true) {
                 // 送られてきたメッセージ読み込み
@@ -91,16 +91,6 @@ class ServerThread extends Thread {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (out != null) {
-                out.close();
             }
             System.out.println("切断されました " + socket.getRemoteSocketAddress());
         }
