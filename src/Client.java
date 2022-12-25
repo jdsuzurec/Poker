@@ -14,8 +14,12 @@ import java.io.IOException;
 */
 public class Client {
     final static int PORT_NUMBER = 10000;
+    private static String userName;
 
     public static void main(String[] args) {
+        GUI gui = new GUI();
+        userName = gui.getName();
+        gui.setVisible(true);
         new Client();
     }
 
@@ -28,14 +32,16 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new ClientThread(socket).start();
+        new ClientThread(socket, userName).start();
     }
 
     public class ClientThread extends Thread {
         private Socket socket;
+        private String userName;
 
-        public ClientThread(Socket socket) {
+        public ClientThread(Socket socket, String userName) {
             this.socket = socket;
+            this.userName = userName;
         }
 
         public void run() {
@@ -44,6 +50,9 @@ public class Client {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 // サーバーへの送信用
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                // 最初に名前の登録を行う
+                out.println(userName);
+
                 // 無限ループでソケットへの入力を監視する
 
                 // 送られてきたメッセージを処理する

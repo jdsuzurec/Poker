@@ -9,12 +9,6 @@ import java.awt.event.WindowEvent;
  * ユーザに表示するGUIを扱う
  */
 public class GUI extends Frame implements ActionListener {
-    // <summary> テスト用 </summary>
-    public static void main(String[] args) {
-        GUI gui = new GUI();
-        gui.setVisible(true);
-    }
-
     // #region field
     // <summary> ウィンドウに表示するパネル </summary>
     private final int PANEL_NUMBER = 8;// 扱うパネルの数
@@ -45,10 +39,12 @@ public class GUI extends Frame implements ActionListener {
     private final int LAYOUT_OPERATION_ROWS = 1, LAYOUT_OPERATION_COLS = OPERATION_NUMBER;// 操作ボタンを横並びに表示
     // #endregion field
 
+    private String userName;
+
     // #region constructor
     public GUI() {
         // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
-        String userName = JOptionPane.showInputDialog(null, "名前を入力してください", "名前の入力", JOptionPane.QUESTION_MESSAGE);
+        userName = JOptionPane.showInputDialog(null, "名前を入力してください", "名前の入力", JOptionPane.QUESTION_MESSAGE);
         if (userName.equals("")) {// 名前の入力がなかった場合はYOUと命名
             userName = "YOU";
         }
@@ -123,6 +119,11 @@ public class GUI extends Frame implements ActionListener {
         });
     }
     // #endregion constructor
+
+    // #region getter
+    public String getUserName() {
+        return this.userName;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

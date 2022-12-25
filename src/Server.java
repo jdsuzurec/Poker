@@ -27,8 +27,8 @@ public class Server {
                     Socket socket = serverSocket.accept();
                     // 定員が上限に達していない限り接続を受け付け、ソケットを作成する
                     if (connection_number < MAX_CONNECTION) {
-                        connection_number++;
                         new ServerThread(socket, connection_number).start();
+                        connection_number++;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
