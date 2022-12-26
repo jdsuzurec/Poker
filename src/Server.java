@@ -11,13 +11,19 @@ import java.io.IOException;
 * </summary>
 */
 public class Server {
-    final static int PORT_NUMBER = 10000;
-    final static int MAX_CONNECTION = 2;
+    final private static int PORT_NUMBER = 10000;
+    final protected static int MAX_CONNECTION = 2;
+    protected static Dealer dealer;
+    protected static String[] userNames = new String[MAX_CONNECTION];
 
     public static void main(String[] args) {
         // TCPポートを指定してサーバソケットを作成
         ServerSocket serverSocket;
         int connection_number = 0; // 接続者数
+        // ディーラーを生成
+        dealer = new Dealer();
+
+        // ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成
         try {
             serverSocket = new ServerSocket(PORT_NUMBER);
             System.out.println("Serverが起動しました(port=" + serverSocket.getLocalPort() + ")");
@@ -33,16 +39,17 @@ public class Server {
                 } catch (IOException e) {
                     System.out.println("ここ1");
                     e.printStackTrace();
-                } finally {
-                    System.out.println("ここ2");
-                    try {
-                        if (serverSocket != null) {
-                            serverSocket.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
+                // finally {
+                // System.out.println("ここ2");
+                // try {
+                // if (serverSocket != null) {
+                // serverSocket.close();
+                // }
+                // } catch (IOException e) {
+                // e.printStackTrace();
+                // }
+                // }
             }
         } catch (Exception e) {
             System.out.println("ここ3");
@@ -58,13 +65,11 @@ public class Server {
  */
 class ServerThread extends Thread {
     private int number;
-    private String userName;
     private Socket socket;
 
     public ServerThread(Socket socket, int number) {
         this.socket = socket;
         this.number = number;
-        System.out.println(number + "番目のクライアントからの接続がありました。");
     }
 
     public void run() {
@@ -75,21 +80,28 @@ class ServerThread extends Thread {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             // 名前が送られてくるので登録
-            userName = in.readLine();
-            out.println("ようこそ、" + userName + "さん！そしてさようなら！！");
-            out.flush();
+            Server.userNames[number] = in.readLine();
+            System.out.println(number + "番目：" + Server.userNames[number] + "さんが入室しました");
+
+            // 2人目のプレイヤーだった場合、2人を選手登録する
+            if (number == Server.MAX_CONNECTION - 1) {
+                Server.dealer.setPlayerNames(Server.userNames);
+            }
+            // 名前を配る
+            // 手札を配る
+
             // 無限ループでソケットへの入力を監視する
-            // while (true) {
-            // // 送られてきたメッセージ読み込み
-            // String message = in.readLine();
-            // if (message != null) {
-            // // exitだったら終了
-            // if (message.equals("exit")) {
-            // break;
-            // }
-            // System.out.println("クライアントからのメッセージ：" + message);
-            // }
-            // }
+            while (true) {
+                // 送られてきたメッセージ読み込み
+                String message = in.readLine();
+                if (message != null) {
+                    System.out.println(Server.userNames[number] + "：" + message);
+                    // exitだったら終了
+                    if (message.equals("exit")) {
+                        break;
+                    }
+                }
+            }
         } catch (IOException e) {
             System.out.println("ここ4");
             e.printStackTrace();

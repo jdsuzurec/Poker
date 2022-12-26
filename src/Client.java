@@ -19,9 +19,11 @@ public class Client {
 
     public static void main(String[] args) {
         gui = new GUI();
+        gui.setVisible(true);
         new Client();
     }
 
+    // ソケット作成、ユーザー名を取得してスレッド生成
     public Client() {
         Socket socket = null;
         try {
@@ -56,34 +58,40 @@ public class Client {
                 out.println(userName);
 
                 // 返事を取得
-                String message = in.readLine();
-                System.out.println(message);
+                // String test = in.readLine();
+                // System.out.println(test);
+
+                // ゲームウィンドウを作成
+                gui.createGameWindow();
+                // プレイヤーたちの名前を反映
+                // 配布されたカードを反映
 
                 // 無限ループでソケットへの入力を監視する
                 // 送られてきたメッセージを処理する
-                // while (true) {
-                // // 送られてきたメッセージ読み込み
-                // String message = in.readLine();
-                // if (message != null) {
-                // // exitだったら終了
-                // if (message.equals("exit")) {
-                // break;
-                // }
-                // System.out.println("サーバーからのメッセージ：" + message);
-                // }
-                // }
+                while (true) {
+                    // 送られてきたメッセージ読み込み
+                    String message = in.readLine();
+                    if (message != null) {
+                        System.out.println("サーバーからのメッセージ：" + message);
+                        // exitだったら終了
+                        if (message.equals("exit")) {
+                            break;
+                        }
+                    }
+                }
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
+            // finally {
+            // if (socket != null) {
+            // try {
+            // socket.close();
+            // } catch (IOException e) {
+            // e.printStackTrace();
+            // }
+            // }
+            // }
         }
     }
 }

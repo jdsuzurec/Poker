@@ -5,18 +5,38 @@
  */
 public class Card {
     private final int A = 1, J = 11, Q = 12, K = 13;
+    private final int SPADE = 0, HEART = 1, DIAMOND = 2, CLOVER = 3;
     private String mark;
     private int number;
     private boolean isHave;
 
-    public Card(String mark, int number) {
-        this.mark = mark;
+    public Card(int mark, int number) {
+        setMark(mark);
         this.number = number;
         this.isHave = false;// 最初は手札ではない
     }
 
     public String getMark() {
         return this.mark;
+    }
+
+    public void setMark(int mark) {
+        switch (mark) {
+            case SPADE:
+                this.mark = "♠︎";
+                break;
+            case HEART:
+                this.mark = "♥";
+                break;
+            case DIAMOND:
+                this.mark = "♦︎";
+                break;
+            case CLOVER:
+                this.mark = "♣︎";
+                break;
+            default:
+                break;
+        }
     }
 
     public int getNumber() {
