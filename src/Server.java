@@ -31,8 +31,10 @@ public class Server {
                         connection_number++;
                     }
                 } catch (IOException e) {
+                    System.out.println("ここ1");
                     e.printStackTrace();
                 } finally {
+                    System.out.println("ここ2");
                     try {
                         if (serverSocket != null) {
                             serverSocket.close();
@@ -43,6 +45,7 @@ public class Server {
                 }
             }
         } catch (Exception e) {
+            System.out.println("ここ3");
             e.printStackTrace();
         }
     }
@@ -70,19 +73,25 @@ class ServerThread extends Thread {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // クライアントへの送信用
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+            // 名前が送られてくるので登録
+            userName = in.readLine();
+            out.println("ようこそ、" + userName + "さん！そしてさようなら！！");
+            out.flush();
             // 無限ループでソケットへの入力を監視する
-            while (true) {
-                // 送られてきたメッセージ読み込み
-                String message = in.readLine();
-                if (message != null) {
-                    // exitだったら終了
-                    if (message.equals("exit")) {
-                        break;
-                    }
-                    System.out.println("クライアントからのメッセージ：" + message);
-                }
-            }
+            // while (true) {
+            // // 送られてきたメッセージ読み込み
+            // String message = in.readLine();
+            // if (message != null) {
+            // // exitだったら終了
+            // if (message.equals("exit")) {
+            // break;
+            // }
+            // System.out.println("クライアントからのメッセージ：" + message);
+            // }
+            // }
         } catch (IOException e) {
+            System.out.println("ここ4");
             e.printStackTrace();
         } finally {
             if (socket != null) {

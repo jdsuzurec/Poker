@@ -15,11 +15,10 @@ import java.io.IOException;
 public class Client {
     final static int PORT_NUMBER = 10000;
     private static String userName;
+    private static GUI gui;
 
     public static void main(String[] args) {
-        GUI gui = new GUI();
-        userName = gui.getName();
-        gui.setVisible(true);
+        gui = new GUI();
         new Client();
     }
 
@@ -29,9 +28,12 @@ public class Client {
             socket = new Socket("localhost", PORT_NUMBER);
         } catch (UnknownHostException e) {
             e.printStackTrace();
+            System.err.println("ホストの IP アドレスが判定できません: " + e);
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("エラーが発生しました: " + e);
         }
+        userName = gui.hearingUserName();
         new ClientThread(socket, userName).start();
     }
 
@@ -53,20 +55,23 @@ public class Client {
                 // 最初に名前の登録を行う
                 out.println(userName);
 
-                // 無限ループでソケットへの入力を監視する
+                // 返事を取得
+                String message = in.readLine();
+                System.out.println(message);
 
+                // 無限ループでソケットへの入力を監視する
                 // 送られてきたメッセージを処理する
-                while (true) {
-                    // 送られてきたメッセージ読み込み
-                    String message = in.readLine();
-                    if (message != null) {
-                        // exitだったら終了
-                        if (message.equals("exit")) {
-                            break;
-                        }
-                        System.out.println("サーバーからのメッセージ：" + message);
-                    }
-                }
+                // while (true) {
+                // // 送られてきたメッセージ読み込み
+                // String message = in.readLine();
+                // if (message != null) {
+                // // exitだったら終了
+                // if (message.equals("exit")) {
+                // break;
+                // }
+                // System.out.println("サーバーからのメッセージ：" + message);
+                // }
+                // }
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();

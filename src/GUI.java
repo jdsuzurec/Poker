@@ -43,86 +43,95 @@ public class GUI extends Frame implements ActionListener {
 
     // #region constructor
     public GUI() {
-        // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
+        // // ここでdealerに名前を登録したい
+
+        // // <summary> ウィンドウを作成 </summary>
+        // setSize(WIDTH, HIGHT);
+        // setTitle("Poker Game ( " + userName + " )");
+        // setLayout(new GridLayout(LAYOUT_ROWS, LAYOUT_COLS));
+
+        // // <summary> パネルを表示 </summary>
+        // // 左（カード表示部部分）
+        // panels[LEFT].setLayout(new GridLayout(LAYOUT_LEFT_ROWS, LAYOUT_LEFT_COLS));
+        // panels[LEFT_UP].setLayout(new BorderLayout());
+        // panels[LEFT_DOWN].setLayout(new BorderLayout());
+        // panels[LEFT].add(panels[LEFT_UP]);
+        // panels[LEFT].add(panels[LEFT_DOWN]);
+        // add(panels[LEFT]);
+        // // 右（メッセージ＋操作ボタン部分）
+        // panels[RIGHT].setLayout(new GridLayout(LAYOUT_RIGHT_ROWS,
+        // LAYOUT_RIGHT_COLS));
+        // panels[RIGHT_UP].setLayout(new GridLayout(LAYOUT_MESSAGE_ROWS,
+        // LAYOUT_MESSAGE_COLS));
+        // panels[RIGHT_DOWN].setLayout(new GridLayout(LAYOUT_OPERATION_ROWS,
+        // LAYOUT_OPERATION_COLS));
+        // panels[RIGHT].add(panels[RIGHT_UP]);
+        // panels[RIGHT].add(panels[RIGHT_DOWN]);
+        // add(panels[RIGHT]);
+
+        // // <summary> ボタンを表示 </summary>
+        // // カード系
+        // panels[OPPONENTCARD].setLayout(new GridLayout(LAYOUT_CARD_ROWS,
+        // LAYOUT_CARD_COLS));
+        // panels[LEFT_UP].add(panels[OPPONENTCARD], BorderLayout.CENTER);
+        // for (Button card : opponentCards) {
+        // card.setLabel("");// 相手のカードは伏せられる
+        // panels[OPPONENTCARD].add(card);
+        // }
+        // panels[USERCARD].setLayout(new GridLayout(LAYOUT_CARD_ROWS,
+        // LAYOUT_CARD_COLS));
+        // panels[LEFT_DOWN].add(panels[USERCARD], BorderLayout.CENTER);
+        // for (Button card : userCards) {
+        // card.setLabel("");// まだカード配布されていないので空
+        // panels[USERCARD].add(card);
+        // }
+        // // 操作系
+        // operationButtons[EXCHANGE].setLabel("交換");
+        // operationButtons[EXCHANGE].addActionListener(this);
+        // panels[RIGHT_DOWN].add(operationButtons[EXCHANGE]);
+        // operationButtons[FINISH].setLabel("ターン終了");
+        // operationButtons[FINISH].addActionListener(this);
+        // panels[RIGHT_DOWN].add(operationButtons[FINISH]);
+
+        // // <summary> ラベルを表示 </summary>
+        // // 対戦相手の名前
+        // labels[OPPONENT_NAME].setText("");// ここでじゃなく後でディーラーに名前をもらいたい
+        // labels[OPPONENT_NAME].setHorizontalAlignment(JLabel.CENTER);
+        // panels[LEFT_UP].add(labels[OPPONENT_NAME], BorderLayout.NORTH);
+        // // プレイヤーの名前
+        // labels[USER_NAME].setText(userName);
+        // labels[USER_NAME].setHorizontalAlignment(JLabel.CENTER);
+        // panels[LEFT_DOWN].add(labels[USER_NAME], BorderLayout.SOUTH);
+        // // ターン数
+        // labels[TURN].setText("ターン");// ここでディーラーにターンをもらいたい
+        // labels[TURN].setHorizontalAlignment(JLabel.CENTER);
+        // panels[RIGHT_UP].add(labels[TURN]);
+        // // メッセージ（順番が来ているユーザとか勝者とか）
+        // labels[MESSAGE].setText("対戦相手を探しています");
+        // labels[MESSAGE].setHorizontalAlignment(JLabel.CENTER);
+        // panels[RIGHT_UP].add(labels[MESSAGE]);
+
+        // // <summary> ウィンドウを閉じる処理 </summary>
+        // addWindowListener(new WindowAdapter() {
+        // public void windowClosing(WindowEvent we) {
+        // System.exit(0);
+        // }
+        // });
+    }
+    // #endregion constructor
+
+    // // #region getter
+    // public String getUserName() {
+    // return this.userName;
+    // }
+
+    // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
+    public String hearingUserName() {
         userName = JOptionPane.showInputDialog(null, "名前を入力してください", "名前の入力", JOptionPane.QUESTION_MESSAGE);
         if (userName.equals("")) {// 名前の入力がなかった場合はYOUと命名
             userName = "YOU";
         }
-        // ここでdealerに名前を登録したい
-
-        // <summary> ウィンドウを作成 </summary>
-        setSize(WIDTH, HIGHT);
-        setTitle("Poker Game ( " + userName + " )");
-        setLayout(new GridLayout(LAYOUT_ROWS, LAYOUT_COLS));
-
-        // <summary> パネルを表示 </summary>
-        // 左（カード表示部部分）
-        panels[LEFT].setLayout(new GridLayout(LAYOUT_LEFT_ROWS, LAYOUT_LEFT_COLS));
-        panels[LEFT_UP].setLayout(new BorderLayout());
-        panels[LEFT_DOWN].setLayout(new BorderLayout());
-        panels[LEFT].add(panels[LEFT_UP]);
-        panels[LEFT].add(panels[LEFT_DOWN]);
-        add(panels[LEFT]);
-        // 右（メッセージ＋操作ボタン部分）
-        panels[RIGHT].setLayout(new GridLayout(LAYOUT_RIGHT_ROWS, LAYOUT_RIGHT_COLS));
-        panels[RIGHT_UP].setLayout(new GridLayout(LAYOUT_MESSAGE_ROWS, LAYOUT_MESSAGE_COLS));
-        panels[RIGHT_DOWN].setLayout(new GridLayout(LAYOUT_OPERATION_ROWS, LAYOUT_OPERATION_COLS));
-        panels[RIGHT].add(panels[RIGHT_UP]);
-        panels[RIGHT].add(panels[RIGHT_DOWN]);
-        add(panels[RIGHT]);
-
-        // <summary> ボタンを表示 </summary>
-        // カード系
-        panels[OPPONENTCARD].setLayout(new GridLayout(LAYOUT_CARD_ROWS, LAYOUT_CARD_COLS));
-        panels[LEFT_UP].add(panels[OPPONENTCARD], BorderLayout.CENTER);
-        for (Button card : opponentCards) {
-            card.setLabel("");// 相手のカードは伏せられる
-            panels[OPPONENTCARD].add(card);
-        }
-        panels[USERCARD].setLayout(new GridLayout(LAYOUT_CARD_ROWS, LAYOUT_CARD_COLS));
-        panels[LEFT_DOWN].add(panels[USERCARD], BorderLayout.CENTER);
-        for (Button card : userCards) {
-            card.setLabel("");// まだカード配布されていないので空
-            panels[USERCARD].add(card);
-        }
-        // 操作系
-        operationButtons[EXCHANGE].setLabel("交換");
-        operationButtons[EXCHANGE].addActionListener(this);
-        panels[RIGHT_DOWN].add(operationButtons[EXCHANGE]);
-        operationButtons[FINISH].setLabel("ターン終了");
-        operationButtons[FINISH].addActionListener(this);
-        panels[RIGHT_DOWN].add(operationButtons[FINISH]);
-
-        // <summary> ラベルを表示 </summary>
-        // 対戦相手の名前
-        labels[OPPONENT_NAME].setText("");// ここでじゃなく後でディーラーに名前をもらいたい
-        labels[OPPONENT_NAME].setHorizontalAlignment(JLabel.CENTER);
-        panels[LEFT_UP].add(labels[OPPONENT_NAME], BorderLayout.NORTH);
-        // プレイヤーの名前
-        labels[USER_NAME].setText(userName);
-        labels[USER_NAME].setHorizontalAlignment(JLabel.CENTER);
-        panels[LEFT_DOWN].add(labels[USER_NAME], BorderLayout.SOUTH);
-        // ターン数
-        labels[TURN].setText("ターン");// ここでディーラーにターンをもらいたい
-        labels[TURN].setHorizontalAlignment(JLabel.CENTER);
-        panels[RIGHT_UP].add(labels[TURN]);
-        // メッセージ（順番が来ているユーザとか勝者とか）
-        labels[MESSAGE].setText("対戦相手を探しています");
-        labels[MESSAGE].setHorizontalAlignment(JLabel.CENTER);
-        panels[RIGHT_UP].add(labels[MESSAGE]);
-
-        // <summary> ウィンドウを閉じる処理 </summary>
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                System.exit(0);
-            }
-        });
-    }
-    // #endregion constructor
-
-    // #region getter
-    public String getUserName() {
-        return this.userName;
+        return userName;
     }
 
     @Override
