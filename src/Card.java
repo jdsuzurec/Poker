@@ -1,8 +1,11 @@
+
 /*
  * <summary>
  * カードに関する情報を保持
  * </summary>
  */
+import java.io.Serializable;
+
 public class Card {
     private final int A = 1, J = 11, Q = 12, K = 13;
     private final int SPADE = 0, HEART = 1, DIAMOND = 2, CLOVER = 3;
@@ -64,6 +67,10 @@ public class Card {
 
     public void setIsHave(boolean isHave) {
         this.isHave = isHave;
+    }
+
+    public String toString() {
+        return getMark() + " : " + getNumberString();
     }
 }
 

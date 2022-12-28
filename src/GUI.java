@@ -41,17 +41,6 @@ public class GUI extends Frame implements ActionListener {
     // #endregion field
 
     private String userName = "";
-    private int userNumber;
-
-    // #region constructor
-    public GUI() {
-    }
-    // #endregion constructor
-
-    // // #region getter
-    // public String getUserName() {
-    // return this.userName;
-    // }
 
     // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
     public String hearingUserName() {
@@ -148,6 +137,14 @@ public class GUI extends Frame implements ActionListener {
                 System.exit(0);
             }
         });
+    }
+
+    public void setUserLabel(String name) {
+        labels[USER_NAME].setText(name);
+    }
+
+    public void setOpponentLabel(String name) {
+        labels[OPPONENT_NAME].setText(name);
     }
 
     @Override

@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.DataOutputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
@@ -12,16 +14,21 @@ import java.io.IOException;
 */
 public class Server {
     final private static int PORT_NUMBER = 10000;
-    final protected static int MAX_CONNECTION = 2;
-    protected static Dealer dealer;
-    protected static String[] userNames = new String[MAX_CONNECTION];
+    final public static int MAX_CONNECTION = 2;
+    public static Dealer dealer = Dealer.getInstance();
+    public static String[] userNames = new String[MAX_CONNECTION];
+    // private static PrintWriter[] out = new PrintWriter[MAX_CONNECTION];
+    private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
+    private static ObjectOutputStream[] obj_out = new ObjectOutputStream[MAX_CONNECTION];
+
+    public Server() {
+        // dealer = Dealer.getInstance();
+    }
 
     public static void main(String[] args) {
         // TCPポートを指定してサーバソケットを作成
         ServerSocket serverSocket;
         int connection_number = 0; // 接続者数
-        // ディーラーを生成
-        dealer = new Dealer();
 
         // ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成
         try {
@@ -33,6 +40,9 @@ public class Server {
                     Socket socket = serverSocket.accept();
                     // 定員が上限に達していない限り接続を受け付け、ソケットを作成する
                     if (connection_number < MAX_CONNECTION) {
+                        // out[connection_number] = new PrintWriter(socket.getOutputStream(), true);
+                        data_out[connection_number] = new DataOutputStream(socket.getOutputStream());
+                        obj_out[connection_number] = new ObjectOutputStream(socket.getOutputStream());
                         new ServerThread(socket, connection_number).start();
                         connection_number++;
                     }
@@ -56,6 +66,39 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+    public static void sendForAllPlayers_String(String message) {
+        // for (PrintWriter pw : out) {
+        // pw.println(message);
+        // pw.flush();
+        // }
+        for (DataOutputStream dos : data_out) {
+            try {
+                dos.writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void sendForAllPlayers_Object(Object obj) {
+        for (ObjectOutputStream oos : obj_out) {
+            try {
+                oos.writeObject(obj);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static Dealer getDealer() {
+        return dealer;
+    }
+
+    // public static void checkDealer() {
+    // System.out.println(getDealer().getName(0));
+    // System.out.println(getDealer().getName(1));
+    // }
 }
 
 /*
@@ -77,18 +120,33 @@ class ServerThread extends Thread {
             // クライアントからの受取用
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // クライアントへの送信用
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            // PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
             // 名前が送られてくるので登録
             Server.userNames[number] = in.readLine();
             System.out.println(number + "番目：" + Server.userNames[number] + "さんが入室しました");
+            // ユーザ番号を返す
+            out.writeInt(number);
+            // out.println(number);
+            // out.flush();
 
             // 2人目のプレイヤーだった場合、2人を選手登録する
             if (number == Server.MAX_CONNECTION - 1) {
+                Server.getDealer().setPlayerNames(Server.userNames);
                 Server.dealer.setPlayerNames(Server.userNames);
+                Server.getDealer().createDeck();
+                // ゲーム開始
+                // Server.sendForAllPlayers("START");
+                Server.sendForAllPlayers_String("START");
+                Server.sendForAllPlayers_Object(Server.userNames);
+                // Server.sendForAllPlayers_String("START");
+                // Server.sendForAllPlayers(Server.getDealer().getPlayerNames());
+                // for (int i = 0; i < 2; i++) {
+                // System.out.println(Server.getDealer().getName(i));
+                // // System.out.println(Server.dealer.getName(i));
+                // }
             }
-            // 名前を配る
-            // 手札を配る
 
             // 無限ループでソケットへの入力を監視する
             while (true) {

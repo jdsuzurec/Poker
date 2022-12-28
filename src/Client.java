@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
@@ -14,6 +16,7 @@ import java.io.IOException;
 */
 public class Client {
     final static int PORT_NUMBER = 10000;
+    final private int MAX_CONNECTION = 2;
     private static String userName;
     private static GUI gui;
 
@@ -42,6 +45,7 @@ public class Client {
     public class ClientThread extends Thread {
         private Socket socket;
         private String userName;
+        private int userNumber;
 
         public ClientThread(Socket socket, String userName) {
             this.socket = socket;
@@ -51,28 +55,71 @@ public class Client {
         public void run() {
             try {
                 // サーバーからの受取用
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                DataInputStream data_in = new DataInputStream(socket.getInputStream());
+                ObjectInputStream obj_in = new ObjectInputStream(socket.getInputStream());
+                // BufferedReader in = new BufferedReader(new
+                // InputStreamReader(socket.getInputStream()));
                 // サーバーへの送信用
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 // 最初に名前の登録を行う
                 out.println(userName);
-
-                // 返事を取得
-                // String test = in.readLine();
-                // System.out.println(test);
+                // ユーザ番号を取得
+                // String userNumber_Str = in.readLine();
+                // userNumber = Integer.parseInt(userNumber_Str);
+                userNumber = data_in.readInt();
+                System.out.println("あなたは" + userNumber + "番目：" + userName + "です");
 
                 // ゲームウィンドウを作成
                 gui.createGameWindow();
                 // プレイヤーたちの名前を反映
-                // 配布されたカードを反映
+                // 配布されたカードを反映、
 
                 // 無限ループでソケットへの入力を監視する
                 // 送られてきたメッセージを処理する
                 while (true) {
                     // 送られてきたメッセージ読み込み
-                    String message = in.readLine();
+                    // String message = in.readLine();
+                    String message = data_in.readUTF();
                     if (message != null) {
                         System.out.println("サーバーからのメッセージ：" + message);
+                        switch (message) {
+                            case "START":
+                                System.out.println("ゲーム開始ですよ");
+                                // 名前を配って表示させる
+                                try {
+                                    String[] playerNames = (String[]) obj_in.readObject();
+                                    for (int i = 0; i < MAX_CONNECTION; i++) {
+                                        if (i == userNumber) {
+                                            gui.setUserLabel(playerNames[i]);
+                                        } else {
+                                            gui.setOpponentLabel(playerNames[i]);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                // if (i == userNumber) {
+                                // gui.setUserLabel(playerNames[i]);
+                                // } else {
+                                // gui.setOpponentLabel(playerNames[i]);
+                                // }
+                                // }
+                                // for (int i = 0; i < MAX_CONNECTION; i++) {
+                                // System.out.println(dealer.getName(i));
+                                // if (i == userNumber) {
+                                // gui.setUserLabel(dealer.getName(i));
+                                // } else {
+                                // gui.setOpponentLabel(dealer.getName(i));
+                                // }
+                                // }
+                                // 手札を配る
+                                // 先行後行
+                                break;
+
+                            default:
+                                break;
+                        }
                         // exitだったら終了
                         if (message.equals("exit")) {
                             break;
