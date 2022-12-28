@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.security.cert.TrustAnchor;
 
 /*
  * ユーザに表示するGUIを扱う
@@ -41,6 +42,7 @@ public class GUI extends Frame implements ActionListener {
     // #endregion field
 
     private String userName = "";
+    private boolean isMyTurn = false;
 
     // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
     public String hearingUserName() {
@@ -149,6 +151,19 @@ public class GUI extends Frame implements ActionListener {
 
     public void setUserCard(int index, Card card) {
         userCards[index].setLabel(card.toString());// まだカード配布されていないので空
+    }
+
+    public void setMessageLabel(boolean next) {
+        isMyTurn = next;
+        if (next) {
+            labels[MESSAGE].setText("あなたの番です");
+        } else {
+            labels[MESSAGE].setText("相手の番です");
+        }
+    }
+
+    public void setTurnLabel(int next) {
+        labels[TURN].setText(next + "ターンめ");
     }
 
     @Override

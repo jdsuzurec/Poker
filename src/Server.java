@@ -15,17 +15,15 @@ import java.io.IOException;
 public class Server {
     final private static int PORT_NUMBER = 10000;
     final private static int MAX_CONNECTION = 2;
-    private static Dealer dealer = Dealer.getInstance();
     public static String[] userNames = new String[MAX_CONNECTION];
-    // private static PrintWriter[] out = new PrintWriter[MAX_CONNECTION];
     private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
     private static ObjectOutputStream[] obj_out = new ObjectOutputStream[MAX_CONNECTION];
 
-    public Server() {
-        // dealer = Dealer.getInstance();
-    }
-
     public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            System.out.println(i % MAX_CONNECTION);
+        }
+
         // TCPポートを指定してサーバソケットを作成
         ServerSocket serverSocket;
         int connection_number = 0; // 接続者数
@@ -40,7 +38,6 @@ public class Server {
                     Socket socket = serverSocket.accept();
                     // 定員が上限に達していない限り接続を受け付け、ソケットを作成する
                     if (connection_number < MAX_CONNECTION) {
-                        // out[connection_number] = new PrintWriter(socket.getOutputStream(), true);
                         data_out[connection_number] = new DataOutputStream(socket.getOutputStream());
                         obj_out[connection_number] = new ObjectOutputStream(socket.getOutputStream());
                         new ServerThread(socket, connection_number).start();
@@ -87,9 +84,9 @@ public class Server {
         }
     }
 
-    public static Dealer getDealer() {
-        return dealer;
-    }
+    // public static Dealer getDealer() {
+    // return dealer;
+    // }
 
     public static int getMAX_CONNECTION() {
         return MAX_CONNECTION;
@@ -104,6 +101,7 @@ public class Server {
 class ServerThread extends Thread {
     private int number;
     private Socket socket;
+    private Dealer dealer = Dealer.getInstance();
 
     public ServerThread(Socket socket, int number) {
         this.socket = socket;
@@ -115,7 +113,6 @@ class ServerThread extends Thread {
             // クライアントからの受取用
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // クライアントへの送信用
-            // PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
             // 名前が送られてくるので登録
@@ -126,16 +123,10 @@ class ServerThread extends Thread {
 
             // 2人目のプレイヤーだった場合、2人を選手登録する
             if (number == Server.getMAX_CONNECTION() - 1) {
-                Server.getDealer().setPlayerNames(Server.userNames);
-                // Server.getDealer().createDeck();
+                dealer.setPlayerNames(Server.userNames);
                 // ゲーム開始
                 Server.sendForAllPlayers_String("START");
-                // 名前を配る
-                Server.sendForAllPlayers_Object(Server.userNames);
-                // 手札を配る Card[]を送る
-                // Server.getDealer().setHands();
-                Server.sendForAllPlayers_Object(Server.getDealer().getHands());
-                // Card[][] hands =
+                Server.sendForAllPlayers_Object(dealer);
             }
 
             // 無限ループでソケットへの入力を監視する

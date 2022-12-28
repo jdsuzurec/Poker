@@ -5,8 +5,9 @@
  * </summary>
  */
 import java.util.Random;
+import java.io.Serializable;
 
-public class Dealer {
+public class Dealer implements Serializable {
     private static Dealer instance;
     /* 山札（deck）情報 */
     private final int NUM_OF_MARK = 4, NUM_OF_CARDNUM = 13;// マークの数、数字の数
@@ -18,6 +19,13 @@ public class Dealer {
     /* 手札 */
     private final static int NUM_OF_CARD = 5;// プレイヤーが所持できるカードの数
     private Card[][] hands = new Card[playerNames.length][NUM_OF_CARD];
+    private int count_of_turn = 0;
+    private final int NUM_OF_TURNS = 5;
+    // ユーザが操作した数（全体） 交換もしくは何もせず終了したら増える
+    // 順番かどうかはこれ%Server.getMAX_CONNECTION()==userNumか
+    private int count_of_operations = 0;
+    // operationsが↓に達したらゲーム終了
+    private final int NUM_OF_OPERATIONS = NUM_OF_TURNS * playerNames.length;
 
     private Dealer() {
         instance = null;
@@ -29,6 +37,7 @@ public class Dealer {
             instance = new Dealer();
             instance.createDeck();
             instance.setHands();
+            instance.nextTurn();
         }
         return instance;
     }
@@ -48,6 +57,18 @@ public class Dealer {
         // }
         // System.out.println();
         // }
+    }
+
+    private void nextTurn() {
+        count_of_turn++;
+    }
+
+    public int getTurn() {
+        return count_of_turn;
+    }
+
+    public int getNum_Of_TurnUser() {
+        return count_of_operations % playerNames.length;
     }
 
     // 全ユーザの手札を初期設定

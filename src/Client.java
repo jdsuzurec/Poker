@@ -83,8 +83,9 @@ public class Client {
                             case "START":
                                 System.out.println("ゲーム開始ですよ");
                                 try {
+                                    Dealer dealer = (Dealer) obj_in.readObject();
                                     // 名前を配って表示させる
-                                    String[] playerNames = (String[]) obj_in.readObject();
+                                    String[] playerNames = dealer.getPlayerNames();
                                     for (int i = 0; i < MAX_CONNECTION; i++) {
                                         if (i == userNumber) {
                                             gui.setUserLabel(playerNames[i]);
@@ -93,18 +94,23 @@ public class Client {
                                         }
                                     }
                                     // 手札を配る
-                                    Card[][] hands = (Card[][]) obj_in.readObject();
+                                    Card[][] hands = dealer.getHands();
+                                    System.out.print("最初の手札：");
                                     for (int i = 0; i < hands[userNumber].length; i++) {
+                                        // guiに反映
                                         gui.setUserCard(i, hands[userNumber][i]);
                                         System.out.print(hands[userNumber][i].toString() + ", ");
                                     }
                                     System.out.println();
+                                    // 先行後行反映
+                                    gui.setMessageLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
+                                    // ターン数反映
+                                    gui.setTurnLabel(dealer.getTurn());
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
-                                // 先行後行
                                 break;
 
                             default:
