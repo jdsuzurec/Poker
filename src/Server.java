@@ -14,8 +14,8 @@ import java.io.IOException;
 */
 public class Server {
     final private static int PORT_NUMBER = 10000;
-    final public static int MAX_CONNECTION = 2;
-    public static Dealer dealer = Dealer.getInstance();
+    final private static int MAX_CONNECTION = 2;
+    private static Dealer dealer = Dealer.getInstance();
     public static String[] userNames = new String[MAX_CONNECTION];
     // private static PrintWriter[] out = new PrintWriter[MAX_CONNECTION];
     private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
@@ -68,10 +68,6 @@ public class Server {
     }
 
     public static void sendForAllPlayers_String(String message) {
-        // for (PrintWriter pw : out) {
-        // pw.println(message);
-        // pw.flush();
-        // }
         for (DataOutputStream dos : data_out) {
             try {
                 dos.writeUTF(message);
@@ -95,10 +91,9 @@ public class Server {
         return dealer;
     }
 
-    // public static void checkDealer() {
-    // System.out.println(getDealer().getName(0));
-    // System.out.println(getDealer().getName(1));
-    // }
+    public static int getMAX_CONNECTION() {
+        return MAX_CONNECTION;
+    }
 }
 
 /*
@@ -128,24 +123,19 @@ class ServerThread extends Thread {
             System.out.println(number + "番目：" + Server.userNames[number] + "さんが入室しました");
             // ユーザ番号を返す
             out.writeInt(number);
-            // out.println(number);
-            // out.flush();
 
             // 2人目のプレイヤーだった場合、2人を選手登録する
-            if (number == Server.MAX_CONNECTION - 1) {
+            if (number == Server.getMAX_CONNECTION() - 1) {
                 Server.getDealer().setPlayerNames(Server.userNames);
-                Server.dealer.setPlayerNames(Server.userNames);
-                Server.getDealer().createDeck();
+                // Server.getDealer().createDeck();
                 // ゲーム開始
-                // Server.sendForAllPlayers("START");
                 Server.sendForAllPlayers_String("START");
+                // 名前を配る
                 Server.sendForAllPlayers_Object(Server.userNames);
-                // Server.sendForAllPlayers_String("START");
-                // Server.sendForAllPlayers(Server.getDealer().getPlayerNames());
-                // for (int i = 0; i < 2; i++) {
-                // System.out.println(Server.getDealer().getName(i));
-                // // System.out.println(Server.dealer.getName(i));
-                // }
+                // 手札を配る Card[]を送る
+                // Server.getDealer().setHands();
+                Server.sendForAllPlayers_Object(Server.getDealer().getHands());
+                // Card[][] hands =
             }
 
             // 無限ループでソケットへの入力を監視する

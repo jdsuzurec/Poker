@@ -64,8 +64,6 @@ public class Client {
                 // 最初に名前の登録を行う
                 out.println(userName);
                 // ユーザ番号を取得
-                // String userNumber_Str = in.readLine();
-                // userNumber = Integer.parseInt(userNumber_Str);
                 userNumber = data_in.readInt();
                 System.out.println("あなたは" + userNumber + "番目：" + userName + "です");
 
@@ -74,8 +72,7 @@ public class Client {
                 // プレイヤーたちの名前を反映
                 // 配布されたカードを反映、
 
-                // 無限ループでソケットへの入力を監視する
-                // 送られてきたメッセージを処理する
+                // 無限ループでソケットへの入力を監視して、送られてきたデータを処理する
                 while (true) {
                     // 送られてきたメッセージ読み込み
                     // String message = in.readLine();
@@ -85,8 +82,8 @@ public class Client {
                         switch (message) {
                             case "START":
                                 System.out.println("ゲーム開始ですよ");
-                                // 名前を配って表示させる
                                 try {
+                                    // 名前を配って表示させる
                                     String[] playerNames = (String[]) obj_in.readObject();
                                     for (int i = 0; i < MAX_CONNECTION; i++) {
                                         if (i == userNumber) {
@@ -95,25 +92,18 @@ public class Client {
                                             gui.setOpponentLabel(playerNames[i]);
                                         }
                                     }
+                                    // 手札を配る
+                                    Card[][] hands = (Card[][]) obj_in.readObject();
+                                    for (int i = 0; i < hands[userNumber].length; i++) {
+                                        gui.setUserCard(i, hands[userNumber][i]);
+                                        System.out.print(hands[userNumber][i].toString() + ", ");
+                                    }
+                                    System.out.println();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
-                                // if (i == userNumber) {
-                                // gui.setUserLabel(playerNames[i]);
-                                // } else {
-                                // gui.setOpponentLabel(playerNames[i]);
-                                // }
-                                // }
-                                // for (int i = 0; i < MAX_CONNECTION; i++) {
-                                // System.out.println(dealer.getName(i));
-                                // if (i == userNumber) {
-                                // gui.setUserLabel(dealer.getName(i));
-                                // } else {
-                                // gui.setOpponentLabel(dealer.getName(i));
-                                // }
-                                // }
-                                // 手札を配る
                                 // 先行後行
                                 break;
 

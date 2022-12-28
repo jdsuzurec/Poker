@@ -6,7 +6,7 @@
  */
 import java.io.Serializable;
 
-public class Card {
+public class Card implements Serializable {
     private final int A = 1, J = 11, Q = 12, K = 13;
     private final int SPADE = 0, HEART = 1, DIAMOND = 2, CLOVER = 3;
     private String mark;

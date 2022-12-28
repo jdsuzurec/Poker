@@ -18,7 +18,7 @@ public class GUI extends Frame implements ActionListener {
     // private Panel[] panels;
     // <summary> ウィンドウに表示するボタン </summary>
     // カード系
-    private final int NUM_OF_CARD = 5;// プレイヤーが所持できるカードの数
+    private final int NUM_OF_CARD = Dealer.getNUM_OF_CARD();// プレイヤーが所持できるカードの数
     private Button[] opponentCards = new Button[NUM_OF_CARD];// 相手プレイヤーの所持カード
     private Button[] userCards = new Button[NUM_OF_CARD];// プレイヤーの所持カード
     // 操作系
@@ -145,6 +145,10 @@ public class GUI extends Frame implements ActionListener {
 
     public void setOpponentLabel(String name) {
         labels[OPPONENT_NAME].setText(name);
+    }
+
+    public void setUserCard(int index, Card card) {
+        userCards[index].setLabel(card.toString());// まだカード配布されていないので空
     }
 
     @Override
