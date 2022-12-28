@@ -19,6 +19,7 @@ public class Client {
     final private int MAX_CONNECTION = 2;
     private static String userName;
     private static GUI gui;
+    private static PrintWriter out;
 
     public static void main(String[] args) {
         gui = new GUI();
@@ -60,7 +61,7 @@ public class Client {
                 // BufferedReader in = new BufferedReader(new
                 // InputStreamReader(socket.getInputStream()));
                 // サーバーへの送信用
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                out = new PrintWriter(socket.getOutputStream(), true);
                 // 最初に名前の登録を行う
                 out.println(userName);
                 // ユーザ番号を取得
@@ -135,6 +136,26 @@ public class Client {
             // }
             // }
             // }
+        }
+    }
+
+    /* <summary> GUIからカード交換やターン終了の命令を受け取ってサーバに送る </summary> */
+    public static void sendOpperation(String opperation) {
+        String[] opperation_split = opperation.split(" ");
+        switch (opperation_split[0]) {
+            case "EXCHANGE":
+                System.out.println(opperation_split[0]);
+                System.out.println(opperation_split[1]);
+                out.println(opperation_split[0]);
+                out.println(opperation_split[1]);
+                break;
+            case "TURNEND":
+                System.out.println(opperation);
+                out.println(opperation);
+                break;
+
+            default:
+                break;
         }
     }
 }

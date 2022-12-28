@@ -86,6 +86,8 @@ public class GUI extends Frame implements ActionListener {
         for (int i = 0; i < NUM_OF_CARD; i++) {
             opponentCards[i] = new Button();
             userCards[i] = new Button();
+            userCards[i].addActionListener(this); // ボタンを押された時反応する
+            userCards[i].setActionCommand(String.valueOf(i));
         }
         panels[OPPONENTCARD].setLayout(new GridLayout(LAYOUT_CARD_ROWS,
                 LAYOUT_CARD_COLS));
@@ -167,9 +169,24 @@ public class GUI extends Frame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-
+    public void actionPerformed(ActionEvent ae) {
+        // <summary>自分のターンでないなら処理しない</summary>
+        if (!isMyTurn) {
+            return;
+        }
+        String buttonType = ae.getActionCommand();
+        int selectedCardNum = 0;
+        System.out.println(buttonType);
+        if (buttonType == operationButtons[EXCHANGE].getLabel()) {
+            // 交換が押された
+            Client.sendOpperation("EXCHANGE " + selectedCardNum);
+        } else if (buttonType == operationButtons[FINISH].getLabel()) {
+            // ターン終了が押された
+            Client.sendOpperation("TURNEND");
+        } else {
+            // カードが押された
+            selectedCardNum = Integer.parseInt(buttonType);
+        }
     }
 
 }

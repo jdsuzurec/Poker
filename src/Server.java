@@ -135,6 +135,17 @@ class ServerThread extends Thread {
                 String message = in.readLine();
                 if (message != null) {
                     System.out.println(Server.userNames[number] + "：" + message);
+                    switch (message) {
+                        case "EXCHANGE":
+                            int numOfExchangedCard = Integer.parseInt(in.readLine());
+                            System.out.println(numOfExchangedCard);
+                            break;
+                        case "TURNEND":
+                            System.out.println("ターンエンドだ");
+                            break;
+                        default:
+                            break;
+                    }
                     // exitだったら終了
                     if (message.equals("exit")) {
                         break;
