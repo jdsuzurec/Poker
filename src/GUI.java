@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +44,7 @@ public class GUI extends Frame implements ActionListener {
 
     private String userName = "";
     private boolean isMyTurn = false;
+    private int selectedCardNum = 0;
 
     // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
     public String hearingUserName() {
@@ -168,15 +170,14 @@ public class GUI extends Frame implements ActionListener {
         labels[TURN].setText(next + "ターンめ");
     }
 
+    // <summary>ボタンが押された時の処理</summary>
     @Override
     public void actionPerformed(ActionEvent ae) {
-        // <summary>自分のターンでないなら処理しない</summary>
+        // 自分のターンでないなら処理しない
         if (!isMyTurn) {
             return;
         }
         String buttonType = ae.getActionCommand();
-        int selectedCardNum = 0;
-        System.out.println(buttonType);
         if (buttonType == operationButtons[EXCHANGE].getLabel()) {
             // 交換が押された
             Client.sendOpperation("EXCHANGE " + selectedCardNum);

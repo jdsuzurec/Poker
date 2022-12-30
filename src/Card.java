@@ -23,7 +23,21 @@ public class Card implements Serializable {
         return this.mark;
     }
 
-    public void setMark(int mark) {
+    public int getMark_Integer(String mark) {
+        switch (mark) {
+            case "♠︎":
+                return SPADE;
+            case "♥":
+                return HEART;
+            case "♦︎":
+                return DIAMOND;
+            case "♣︎":
+                return CLOVER;
+        }
+        return -1;
+    }
+
+    private void setMark(int mark) {
         switch (mark) {
             case SPADE:
                 this.mark = "♠︎";
@@ -46,7 +60,7 @@ public class Card implements Serializable {
         return this.number;
     }
 
-    public String getNumberString() {
+    private String getNumberString() {
         switch (this.number) {
             case A:
                 return "A";

@@ -18,17 +18,19 @@ public class Server {
     public static String[] userNames = new String[MAX_CONNECTION];
     private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
     private static ObjectOutputStream[] obj_out = new ObjectOutputStream[MAX_CONNECTION];
+    private static Dealer dealer = new Dealer();
+    // private Dealer dealer;
 
     public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            System.out.println(i % MAX_CONNECTION);
-        }
+        // for (int i = 0; i < 10; i++) {
+        // System.out.println(i % MAX_CONNECTION);
+        // }
 
         // TCPポートを指定してサーバソケットを作成
         ServerSocket serverSocket;
         int connection_number = 0; // 接続者数
 
-        // ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成
+        // <summary> ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成 </summary>
         try {
             serverSocket = new ServerSocket(PORT_NUMBER);
             System.out.println("Serverが起動しました(port=" + serverSocket.getLocalPort() + ")");
@@ -64,10 +66,22 @@ public class Server {
         }
     }
 
-    public static void sendForAllPlayers_String(String message) {
+    public static void sendForAllPlayers_String(String str) {
         for (DataOutputStream dos : data_out) {
             try {
-                dos.writeUTF(message);
+                dos.writeUTF(str);
+                dos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void sendForAllPlayers_Integer(int num) {
+        for (DataOutputStream dos : data_out) {
+            try {
+                dos.writeInt(num);
+                dos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -78,18 +92,28 @@ public class Server {
         for (ObjectOutputStream oos : obj_out) {
             try {
                 oos.writeObject(obj);
+                oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    // public static Dealer getDealer() {
-    // return dealer;
-    // }
+    public static void sendForOnePlayer_Object(int userNumber, Object obj) {
+        try {
+            obj_out[userNumber].writeObject(obj);
+            obj_out[userNumber].flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static int getMAX_CONNECTION() {
         return MAX_CONNECTION;
+    }
+
+    public static Dealer getDealer() {
+        return dealer;
     }
 }
 
@@ -101,7 +125,6 @@ public class Server {
 class ServerThread extends Thread {
     private int number;
     private Socket socket;
-    private Dealer dealer = Dealer.getInstance();
 
     public ServerThread(Socket socket, int number) {
         this.socket = socket;
@@ -114,34 +137,54 @@ class ServerThread extends Thread {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // クライアントへの送信用
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
             // 名前が送られてくるので登録
             Server.userNames[number] = in.readLine();
             System.out.println(number + "番目：" + Server.userNames[number] + "さんが入室しました");
             // ユーザ番号を返す
             out.writeInt(number);
+            out.flush();
 
             // 2人目のプレイヤーだった場合、2人を選手登録する
             if (number == Server.getMAX_CONNECTION() - 1) {
-                dealer.setPlayerNames(Server.userNames);
+                Server.getDealer().setPlayerNames(Server.userNames);
                 // ゲーム開始
                 Server.sendForAllPlayers_String("START");
-                Server.sendForAllPlayers_Object(dealer);
+                Server.sendForAllPlayers_Object(Server.getDealer());
             }
 
-            // 無限ループでソケットへの入力を監視する
+            // // 無限ループでソケットへの入力を監視する
             while (true) {
                 // 送られてきたメッセージ読み込み
                 String message = in.readLine();
                 if (message != null) {
                     System.out.println(Server.userNames[number] + "：" + message);
                     switch (message) {
+                        /* <summary>カード交換</summary> */
                         case "EXCHANGE":
+                            // 交換するカード情報（手札の何枚目か）
                             int numOfExchangedCard = Integer.parseInt(in.readLine());
-                            System.out.println(numOfExchangedCard);
+                            Card exchangeCard = Server.getDealer().exchangeCard(numOfExchangedCard);
+                            Server.sendForAllPlayers_String("EXCHANGE");
+                            Server.sendForAllPlayers_Integer(numOfExchangedCard);
+                            Server.sendForAllPlayers_Integer(exchangeCard.getMark_Integer(exchangeCard.getMark()));
+                            Server.sendForAllPlayers_Integer(exchangeCard.getNumber());
                             break;
+                        /* <summary>ターン終了</summary> */
                         case "TURNEND":
                             System.out.println("ターンエンドだ");
+                            switch (Server.getDealer().TurnEnd()) {
+                                case "GAMEEND":
+                                    System.out.println("ゲーム終了！");
+                                    break;
+                                default:
+                                    System.out.println("今" + Server.getDealer().getTurn() + "ターンめ");
+                                    System.out.println(
+                                            "次は" + Server.getDealer().getPlayerNames()[Server.getDealer()
+                                                    .getNum_Of_TurnUser()] + "の番");
+                                    Server.sendForAllPlayers_String("TURNEND");
+                                    // Server.sendForAllPlayers_Object(Server.getDealer());
+                                    break;
+                            }
                             break;
                         default:
                             break;
