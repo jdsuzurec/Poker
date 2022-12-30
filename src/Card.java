@@ -32,20 +32,19 @@ public class Card implements Serializable {
         switch (mark_num) {
             case SPADE:
                 mark_str = "♠︎";
-                mark_num = SPADE;
+                this.mark_num = SPADE;
                 break;
             case HEART:
                 mark_str = "♥";
-                mark_num = HEART;
+                this.mark_num = HEART;
                 break;
             case DIAMOND:
                 mark_str = "♦︎";
-                mark_num = DIAMOND;
-
+                this.mark_num = DIAMOND;
                 break;
             case CLOVER:
                 this.mark_str = "♣︎";
-                mark_num = CLOVER;
+                this.mark_num = CLOVER;
                 break;
             default:
                 break;
@@ -53,11 +52,11 @@ public class Card implements Serializable {
     }
 
     public int getNumber() {
-        return this.number;
+        return number;
     }
 
     private String getNumberString() {
-        switch (this.number) {
+        switch (number) {
             case A:
                 return "A";
             case J:
@@ -67,12 +66,12 @@ public class Card implements Serializable {
             case K:
                 return "K";
             default:
-                return String.valueOf(this.number);
+                return String.valueOf(number);
         }
     }
 
     public boolean getIsHave() {
-        return this.isHave;
+        return isHave;
     }
 
     public void setIsHave(boolean isHave) {

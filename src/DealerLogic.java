@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class DealerLogic {
@@ -111,16 +113,17 @@ public class DealerLogic {
     /* <summary> ゲーム終了処理 </summary> */
     public void gameEnd(Dealer dealer) {
         JudgementHand judgementHand = new JudgementHand();
-        int winnerNum;
-        String[] handList = new String[dealer.getPlayerNames().length];
+        // ひとりひとり判定していく <役の強さ, ユーザナンバー>で昇順にして上の人が勝ち
+        Map<Integer, Integer> strengthMap = new HashMap<Integer, Integer>();
         Card[][] hands = dealer.getHands();
-        for (Card[] cards : hands) {
-            judgementHand.judgementHand(cards);
+        for (int i = 0; i < hands.length; i++) {
+            strengthMap.put(judgementHand.judgementHand(hands[i]), i);
         }
+        System.out.println(strengthMap);
     }
 
     /* <summary> デバック用 手札表示 </summary> */
-    private void printHands(Dealer dealer) {
+    public void printHands(Dealer dealer) {
         for (Card[] cards : dealer.getHands()) {
             for (Card card : cards) {
                 if (card == null) {
