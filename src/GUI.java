@@ -156,13 +156,13 @@ public class GUI extends Frame implements ActionListener {
         labels[OPPONENT_NAME].setText(name);
     }
 
-    public void setUserCard(int index, Card[] cards) {
+    public void setUserCard(Card[] cards) {
         for (int i = 0; i < cards.length; i++) {
             userCards[i].setLabel(cards[i].toString());
         }
     }
 
-    public void setOpponentCard(int index, Card[] cards) {
+    public void setOpponentCard(Card[] cards) {
         for (int i = 0; i < cards.length; i++) {
             opponentCards[i].setLabel(cards[i].toString());
         }
@@ -181,7 +181,7 @@ public class GUI extends Frame implements ActionListener {
         labels[TURN].setText(next + "ターンめ");
     }
 
-    public void setResult(String winner) {
+    public void setWinnerName(String winner) {
         if (winner != null) {
             labels[TURN].setText(winner + "の勝ち");
         } else {
@@ -189,9 +189,12 @@ public class GUI extends Frame implements ActionListener {
         }
     }
 
-    public void setHands() {
-        // カード開示
-        // 役開示
+    public void setOpponentHand(String hand) {
+        labels[MESSAGE01].setText(hand);
+    }
+
+    public void setUserHand(String hand) {
+        labels[MESSAGE02].setText(hand);
     }
 
     // <summary>ボタンが押された時の処理</summary>

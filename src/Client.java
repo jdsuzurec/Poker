@@ -96,7 +96,7 @@ public class Client {
                                         }
                                     }
                                     // 手札を配る
-                                    gui.setUserCard(userNumber, dealer.getHands()[userNumber]);
+                                    gui.setUserCard(dealer.getHands()[userNumber]);
                                     // setUserCard(userNumber, dealer);
                                     // 先行後行反映
                                     gui.setChangeUserLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
@@ -116,7 +116,7 @@ public class Client {
                                     int number = data_in.readInt();
                                     Card newCard = dealer.getDeck()[mark][number - 1];
                                     newCard = dealerLogic.exchangeCard(dealer, cardNum, newCard);
-                                    gui.setUserCard(userNumber, dealer.getHands()[userNumber]);
+                                    gui.setUserCard(dealer.getHands()[userNumber]);
                                     // setUserCard(userNumber, dealer);
                                     if (dealer.getNum_Of_TurnUser() == userNumber) {
                                         out.println("OPERATIONEND");
@@ -144,9 +144,15 @@ public class Client {
                                 if (dealer.getWinnerNumber() != -1) {
                                     winnerPlayer = dealer.getPlayerNames()[dealer.getWinnerNumber()];
                                 }
-                                gui.setResult(winnerPlayer);
+                                gui.setWinnerName(winnerPlayer);
+                                // 最終的なカードをGUIに反映
+                                gui.setUserCard(dealer.getHands()[userNumber]);
+                                gui.setOpponentCard(dealer.getHands()[userNumber == 0 ? 1 : 0]);
                                 // 最終的な役をGUIに反映
-
+                                gui.setUserHand(dealer.getPlayerNames()[userNumber] + " : "
+                                        + dealer.getHandNames()[userNumber]);
+                                gui.setOpponentHand(dealer.getPlayerNames()[userNumber == 0 ? 1 : 0] + " : "
+                                        + dealer.getHandNames()[userNumber == 0 ? 1 : 0]);
                                 break;
                             // default:
                             // break;
