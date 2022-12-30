@@ -47,6 +47,7 @@ public class Client {
         private Socket socket;
         private String userName;
         private Dealer dealer;
+        private DealerLogic dealerLogic = new DealerLogic();;
 
         public ClientThread(Socket socket, String userName) {
             this.socket = socket;
@@ -99,42 +100,45 @@ public class Client {
                                     // 先行後行反映
                                     gui.setMessageLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
                                     // ターン数反映
-                                    gui.setTurnLabel(dealer.getTurn());
+                                    gui.setTurnLabel(dealer.getCount_Of_Turn());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
                                 break;
-                            /* <summary>カード交換をGUIに反映</summary> */
+                            /* <summary>交換したカードを受け取ってGUIに反映</summary> */
                             case "EXCHANGE":
                                 System.out.println("手札交換！");
                                 try {
-                                    int numOfExchangedCard = data_in.readInt();
+                                    int cardNum = data_in.readInt();
                                     int mark = data_in.readInt();
                                     int number = data_in.readInt();
-                                    dealer.setCard(numOfExchangedCard, dealer.getNum_Of_TurnUser(), mark, number);
+                                    Card newCard = dealer.getDeck()[mark][number];
+                                    newCard = dealerLogic.exchangeCard(dealer, cardNum, newCard);
                                     setUserCard(userNumber, dealer);
-                                    // dealer.printHands();
                                     if (dealer.getNum_Of_TurnUser() == userNumber) {
-                                        out.println("TURNEND");
+                                        out.println("OPERATIONEND");
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 break;
-                            case "TURNEND":
+                            case "CONTINUEGAME":
                                 try {
-                                    System.out.println(dealer.TurnEnd());
-                                    System.out.println("今" + dealer.getTurn() + "ターンめ");
+                                    System.out.println(dealerLogic.opperationEnd(dealer));
+                                    System.out.println("今" + dealer.getCount_Of_Turn() + "ターンめ");
                                     System.out.println(
                                             "次は" + dealer.getPlayerNames()[dealer.getNum_Of_TurnUser()] + "の番");
                                     // 先行後行反映
                                     gui.setMessageLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
                                     // ターン数反映
-                                    gui.setTurnLabel(dealer.getTurn());
+                                    gui.setTurnLabel(dealer.getCount_Of_Turn());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                                break;
+                            case "GAMEEND":
+                                gui.setMessageLabel(false);
                                 break;
                             // default:
                             // break;
@@ -170,7 +174,7 @@ public class Client {
                 out.println(opperation_split[0]);// EXHANGE
                 out.println(opperation_split[1]);// Card[]のindex
                 break;
-            case "TURNENDprintHands":
+            case "OPERATIONEND":
                 System.out.println(opperation);
                 out.println(opperation);
                 break;
@@ -180,6 +184,7 @@ public class Client {
         }
     }
 
+    /* <summary> GUIに手札を反映する </summary> */
     private void setUserCard(int userNumber, Dealer dealer) {
         Card[][] hands = dealer.getHands();
         for (int i = 0; i < hands[userNumber].length; i++) {

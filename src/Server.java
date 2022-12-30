@@ -19,7 +19,6 @@ public class Server {
     private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
     private static ObjectOutputStream[] obj_out = new ObjectOutputStream[MAX_CONNECTION];
     private static Dealer dealer = new Dealer();
-    // private Dealer dealer;
 
     public static void main(String[] args) {
         // for (int i = 0; i < 10; i++) {
@@ -125,6 +124,7 @@ public class Server {
 class ServerThread extends Thread {
     private int number;
     private Socket socket;
+    private DealerLogic dealerLogic = new DealerLogic();
 
     public ServerThread(Socket socket, int number) {
         this.socket = socket;
@@ -149,6 +149,7 @@ class ServerThread extends Thread {
                 Server.getDealer().setPlayerNames(Server.userNames);
                 // ゲーム開始
                 Server.sendForAllPlayers_String("START");
+                dealerLogic.gameStart(Server.getDealer());
                 Server.sendForAllPlayers_Object(Server.getDealer());
             }
 
@@ -162,26 +163,31 @@ class ServerThread extends Thread {
                         /* <summary>カード交換</summary> */
                         case "EXCHANGE":
                             // 交換するカード情報（手札の何枚目か）
-                            int numOfExchangedCard = Integer.parseInt(in.readLine());
-                            Card exchangeCard = Server.getDealer().exchangeCard(numOfExchangedCard);
+                            int changeCardNum = Integer.parseInt(in.readLine());
+                            Card exchangeCard = dealerLogic.exchangeCard(Server.getDealer(), changeCardNum, null);
                             Server.sendForAllPlayers_String("EXCHANGE");
-                            Server.sendForAllPlayers_Integer(numOfExchangedCard);
-                            Server.sendForAllPlayers_Integer(exchangeCard.getMark_Integer(exchangeCard.getMark()));
+                            Server.sendForAllPlayers_Integer(changeCardNum);
+                            Server.sendForAllPlayers_Integer(exchangeCard.getMark_Integer());
                             Server.sendForAllPlayers_Integer(exchangeCard.getNumber());
                             break;
-                        /* <summary>ターン終了</summary> */
-                        case "TURNEND":
-                            System.out.println("ターンエンドだ");
-                            switch (Server.getDealer().TurnEnd()) {
+                        /* <summary>オペレーション（行動）終了</summary> */
+                        case "OPERATIONEND":
+                            System.out.println("行動終了だ");
+                            switch (dealerLogic.opperationEnd(Server.getDealer())) {
                                 case "GAMEEND":
                                     System.out.println("ゲーム終了！");
+                                    // 勝敗を決める
+                                    // 役のリストと勝者の番号を送る
+                                    // 結果と手札を開示する（クライアント）
+                                    dealerLogic.gameEnd(Server.getDealer());
+                                    Server.sendForAllPlayers_String("GAMEEND");
                                     break;
                                 default:
-                                    System.out.println("今" + Server.getDealer().getTurn() + "ターンめ");
+                                    System.out.println("今" + Server.getDealer().getCount_Of_Turn() + "ターンめ");
                                     System.out.println(
                                             "次は" + Server.getDealer().getPlayerNames()[Server.getDealer()
                                                     .getNum_Of_TurnUser()] + "の番");
-                                    Server.sendForAllPlayers_String("TURNEND");
+                                    Server.sendForAllPlayers_String("CONTINUEGAME");
                                     // Server.sendForAllPlayers_Object(Server.getDealer());
                                     break;
                             }

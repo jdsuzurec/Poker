@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.security.cert.TrustAnchor;
 
 /*
  * ユーザに表示するGUIを扱う
@@ -183,7 +182,7 @@ public class GUI extends Frame implements ActionListener {
             Client.sendOpperation("EXCHANGE " + selectedCardNum);
         } else if (buttonType == operationButtons[FINISH].getLabel()) {
             // ターン終了が押された
-            Client.sendOpperation("TURNEND");
+            Client.sendOpperation("OPERATIONEND");
         } else {
             // カードが押された
             selectedCardNum = Integer.parseInt(buttonType);
