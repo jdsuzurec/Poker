@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 public class JudgementHand {
-    private final static int ROYAL_FLUSH = 0, STRAIGHT_FLUSH = 1, FOUR_OF_A_KIND = 2, FULL_HOUSE = 3,
+    private final int ROYAL_FLUSH = 0, STRAIGHT_FLUSH = 1, FOUR_OF_A_KIND = 2, FULL_HOUSE = 3,
             FLUSH = 4, STRAIGHT = 5, THREE_OF_A_KIND = 6, TWO_PAIR = 7, A_PAIR = 8, HIGH_CARD = 9;
     private List<Card> sortNumCardList = new ArrayList<Card>();
     private int setSize;
@@ -35,7 +35,7 @@ public class JudgementHand {
         return sortNumCardList;
     }
 
-    public static String getHand_Str(int strength) {
+    public String getHand_Str(int strength) {
         switch (strength) {
             case ROYAL_FLUSH:
                 return "ロイヤルストレートフラッシュ";
@@ -180,40 +180,58 @@ public class JudgementHand {
         return cardList;
     }
 
-    public static void main(String[] args) {
-        // Dealer dealer = new Dealer();
-        // DealerLogic dealerLogic = new DealerLogic();
-        JudgementHand judgementHand = new JudgementHand();
-        // dealerLogic.gameStart(dealer);
-        // Card[][] hands = dealer.getHands();
-        // dealerLogic.printHands(dealer);
-        // フラッシュ
-        Card[] cards1 = { new Card(0, 1), new Card(0, 6), new Card(0, 2), new Card(0, 3), new Card(0, 4) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards1)));
-        // ロイヤルストレートフラッシュ
-        Card[] cards2 = { new Card(0, 1), new Card(0, 10), new Card(0, 12), new Card(0, 11), new Card(0, 13) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards2)));
-        // ストレートフラッシュ
-        Card[] cards3 = { new Card(0, 2), new Card(0, 4), new Card(0, 3), new Card(0, 6), new Card(0, 5) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards3)));
-        // ストレート
-        Card[] cards4 = { new Card(3, 2), new Card(0, 4), new Card(1, 3), new Card(0, 6), new Card(0, 5) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards4)));
-        // フォーペア
-        Card[] cards5 = { new Card(3, 1), new Card(0, 1), new Card(1, 1), new Card(0, 6), new Card(2, 1) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards5)));
-        // ワンペア
-        Card[] cards6 = { new Card(3, 1), new Card(0, 1), new Card(1, 5), new Card(0, 10), new Card(2, 12) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards6)));
-        // フルハウス
-        Card[] cards7 = { new Card(3, 1), new Card(0, 1), new Card(1, 5), new Card(0, 5), new Card(2, 5) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards7)));
-        // スリーカード
-        Card[] cards8 = { new Card(3, 1), new Card(0, 11), new Card(1, 1), new Card(0, 3), new Card(2, 1) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards8)));
-        // ツーペア
-        Card[] cards9 = { new Card(3, 1), new Card(0, 1), new Card(1, 5), new Card(0, 5), new Card(2, 8) };
-        System.out.println(getHand_Str(judgementHand.judgementHand(cards9)));
-    }
+    // public static void main(String[] args) {
+    // Dealer dealer = new Dealer();
+    // DealerLogic dealerLogic = new DealerLogic();
+    // JudgementHand judgementHand = new JudgementHand();
+    // dealerLogic.gameStart(dealer);
+    // Card[][] hands = dealer.getHands();
+    // dealerLogic.printHands(dealer);
+    // System.out.println(getHand_Str(judgementHand.judgementHand(hands[0])));
+    // System.out.println(getHand_Str(judgementHand.judgementHand(hands[1])));
+    // // // フラッシュ
+    // // Card[] cards1 = { new Card(0, 1), new Card(0, 6), new Card(0, 2), new
+    // Card(0,
+    // // 3), new Card(0, 4) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards1)));
+    // // // ロイヤルストレートフラッシュ
+    // // Card[] cards2 = { new Card(0, 1), new Card(0, 10), new Card(0, 12), new
+    // // Card(0, 11), new Card(0, 13) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards2)));
+    // // // ストレートフラッシュ
+    // // Card[] cards3 = { new Card(0, 2), new Card(0, 4), new Card(0, 3), new
+    // Card(0,
+    // // 6), new Card(0, 5) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards3)));
+    // // // ストレート
+    // // Card[] cards4 = { new Card(3, 2), new Card(0, 4), new Card(1, 3), new
+    // Card(0,
+    // // 6), new Card(0, 5) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards4)));
+    // // // フォーペア
+    // // Card[] cards5 = { new Card(3, 1), new Card(0, 1), new Card(1, 1), new
+    // Card(0,
+    // // 6), new Card(2, 1) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards5)));
+    // // // ワンペア
+    // // Card[] cards6 = { new Card(3, 1), new Card(0, 1), new Card(1, 5), new
+    // Card(0,
+    // // 10), new Card(2, 12) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards6)));
+    // // // フルハウス
+    // // Card[] cards7 = { new Card(3, 1), new Card(0, 1), new Card(1, 5), new
+    // Card(0,
+    // // 5), new Card(2, 5) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards7)));
+    // // // スリーカード
+    // // Card[] cards8 = { new Card(3, 1), new Card(0, 11), new Card(1, 1), new
+    // // Card(0, 3), new Card(2, 1) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards8)));
+    // // // ツーペア
+    // // Card[] cards9 = { new Card(3, 1), new Card(0, 1), new Card(1, 5), new
+    // Card(0,
+    // // 5), new Card(2, 8) };
+    // // System.out.println(getHand_Str(judgementHand.judgementHand(cards9)));
+    // }
 
 }

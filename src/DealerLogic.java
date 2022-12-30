@@ -113,16 +113,40 @@ public class DealerLogic {
     /* <summary> ゲーム終了処理 </summary> */
     public void gameEnd(Dealer dealer) {
         // 勝者判定
-        // 役判定
-
         JudgementHand judgementHand = new JudgementHand();
-        // ひとりひとり判定していく <役の強さ, ユーザナンバー>で昇順にして上の人が勝ち
-        Map<Integer, Integer> strengthMap = new HashMap<Integer, Integer>();
         Card[][] hands = dealer.getHands();
+        // 役の強さと名前をセット
+        int winnerNumber = 0;
+        int mostStrength = 100;
+        int[] handStrength = dealer.getHandStrength();
+        String[] handNames = dealer.getHandNames();
         for (int i = 0; i < hands.length; i++) {
-            strengthMap.put(judgementHand.judgementHand(hands[i]), i);
+            handStrength[i] = judgementHand.judgementHand(hands[i]);
+            if (handStrength[i] < mostStrength) {
+                mostStrength = handStrength[i];
+                winnerNumber = i;
+            }
+            handNames[i] = judgementHand.getHand_Str(handStrength[i]);
+            System.out.println(handStrength[i] + ": " + handNames[i]);
         }
-        System.out.println(strengthMap);
+        boolean isDraw = true;
+        for (int strength : handStrength) {
+            if (strength != mostStrength) {
+                isDraw = false;
+                break;
+            }
+        }
+        if (isDraw) {
+            winnerNumber = -1;
+        }
+        if (winnerNumber != -1) {
+            System.out.println("勝者は" + dealer.getPlayerNames()[winnerNumber]);
+        } else {
+            System.out.println("引き分け");
+        }
+        dealer.setHandStrength(handStrength);
+        dealer.setHandNames(handNames);
+        dealer.setWinnerNumber(winnerNumber);
     }
 
     /* <summary> デバック用 手札表示 </summary> */

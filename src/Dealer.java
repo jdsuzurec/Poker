@@ -14,8 +14,11 @@ public class Dealer implements Serializable {
     private String[] playerNames = new String[Server.getMAX_CONNECTION()];
     // private Random random = new Random();
     /* <summary> 手札 </summary> */
-    private final static int NUM_OF_CARD = 5;// プレイヤーが所持できるカードの数
+    private final int NUM_OF_CARD = 5;// プレイヤーが所持できるカードの数
     private Card[][] hands = new Card[playerNames.length][NUM_OF_CARD];
+    private int[] handStrength = new int[playerNames.length];
+    private String[] handNames = new String[playerNames.length];
+    private int winnerNumber;
     private int count_of_turn = 0;
     private final int NUM_OF_TURNS = 5;
     // <summary> ユーザが操作した数（全体） 交換もしくは何もせず終了したら増える </summary>
@@ -62,7 +65,7 @@ public class Dealer implements Serializable {
     }
 
     /* <summary>1プレイヤーが所持できるカード枚数を返す </summary> */
-    public static int getNUM_OF_CARD() {
+    public int getNUM_OF_CARD() {
         return NUM_OF_CARD;
     }
 
@@ -78,6 +81,30 @@ public class Dealer implements Serializable {
     /* <summary> 指定場所の手札を指定のカードに入れ替える </summary> */
     public void setHand(int playerNum, int cardNum, Card card) {
         hands[playerNum][cardNum] = card;
+    }
+
+    public void setHandStrength(int[] handStrength) {
+        this.handStrength = handStrength;
+    }
+
+    public int[] getHandStrength() {
+        return handStrength;
+    }
+
+    public void setHandNames(String[] handNames) {
+        this.handNames = handNames;
+    }
+
+    public String[] getHandNames() {
+        return handNames;
+    }
+
+    public void setWinnerNumber(int winnerNumber) {
+        this.winnerNumber = winnerNumber;
+    }
+
+    public int getWinnerNumber() {
+        return winnerNumber;
     }
 
     /* <summary>現在のターン数を返す</summary> */

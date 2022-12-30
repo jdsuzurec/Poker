@@ -113,7 +113,7 @@ public class Client {
                                     int cardNum = data_in.readInt();
                                     int mark = data_in.readInt();
                                     int number = data_in.readInt();
-                                    Card newCard = dealer.getDeck()[mark][number];
+                                    Card newCard = dealer.getDeck()[mark][number - 1];
                                     newCard = dealerLogic.exchangeCard(dealer, cardNum, newCard);
                                     setUserCard(userNumber, dealer);
                                     if (dealer.getNum_Of_TurnUser() == userNumber) {
@@ -125,10 +125,7 @@ public class Client {
                                 break;
                             case "CONTINUEGAME":
                                 try {
-                                    System.out.println(dealerLogic.opperationEnd(dealer));
-                                    System.out.println("今" + dealer.getCount_Of_Turn() + "ターンめ");
-                                    System.out.println(
-                                            "次は" + dealer.getPlayerNames()[dealer.getNum_Of_TurnUser()] + "の番");
+                                    dealerLogic.opperationEnd(dealer);
                                     // 先行後行反映
                                     gui.setMessageLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
                                     // ターン数反映
@@ -139,6 +136,15 @@ public class Client {
                                 break;
                             case "GAMEEND":
                                 gui.setMessageLabel(false);
+                                dealerLogic.gameEnd(dealer);
+                                // 勝者をGUIに反映
+                                String winnerPlayer = null;
+                                if (dealer.getWinnerNumber() != -1) {
+                                    winnerPlayer = dealer.getPlayerNames()[dealer.getWinnerNumber()];
+                                }
+                                gui.setResult(winnerPlayer);
+                                // 最終的な役をGUIに反映
+
                                 break;
                             // default:
                             // break;

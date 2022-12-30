@@ -177,8 +177,6 @@ class ServerThread extends Thread {
                                 case "GAMEEND":
                                     System.out.println("ゲーム終了！");
                                     // 勝敗を決める
-                                    // 役のリストと勝者の番号を送る
-                                    // 結果と手札を開示する（クライアント）
                                     dealerLogic.gameEnd(Server.getDealer());
                                     Server.sendForAllPlayers_String("GAMEEND");
                                     break;
