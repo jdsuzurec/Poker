@@ -112,6 +112,9 @@ public class DealerLogic {
 
     /* <summary> ゲーム終了処理 </summary> */
     public void gameEnd(Dealer dealer) {
+        // 勝者判定
+        // 役判定
+
         JudgementHand judgementHand = new JudgementHand();
         // ひとりひとり判定していく <役の強さ, ユーザナンバー>で昇順にして上の人が勝ち
         Map<Integer, Integer> strengthMap = new HashMap<Integer, Integer>();
