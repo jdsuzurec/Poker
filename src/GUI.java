@@ -27,8 +27,8 @@ public class GUI extends Frame implements ActionListener {
     private final int EXCHANGE = 0, FINISH = 1;
     private Button[] operationButtons = new Button[NUM_OF_OPERATION];
     // <summary> ウィンドウに表示するラベル </summary>
-    private final int NUM_OF_LABEL = 4;
-    private final int OPPONENT_NAME = 0, USER_NAME = 1, TURN = 2, MESSAGE = 3;
+    private final int NUM_OF_LABEL = 5;
+    private final int OPPONENT_NAME = 0, USER_NAME = 1, TURN = 2, MESSAGE01 = 3, MESSAGE02 = 4;
     private JLabel[] labels = new JLabel[NUM_OF_LABEL];
     // <summary> ウィンドウサイズ </summary>
     private final int WIDTH = 800, HIGHT = 400;
@@ -37,13 +37,13 @@ public class GUI extends Frame implements ActionListener {
     private final int LAYOUT_LEFT_ROWS = 2, LAYOUT_LEFT_COLS = 1;// 上が相手のカード 下が自分のカードを表示
     private final int LAYOUT_CARD_ROWS = 1, LAYOUT_CARD_COLS = NUM_OF_CARD;// カードは1行 カード枚数列表示
     private final int LAYOUT_RIGHT_ROWS = 2, LAYOUT_RIGHT_COLS = 1;// 上がメッセージ 下が操作ボタン表示
-    private final int LAYOUT_MESSAGE_ROWS = 2, LAYOUT_MESSAGE_COLS = 1;// 上がターン数 下が順番と勝者表示
+    private final int LAYOUT_MESSAGE_ROWS = 3, LAYOUT_MESSAGE_COLS = 1;// 上がターン数 下が順番と勝者表示
     private final int LAYOUT_OPERATION_ROWS = 1, LAYOUT_OPERATION_COLS = NUM_OF_OPERATION;// 操作ボタンを横並びに表示
     // #endregion field
 
     private String userName = "";
     private boolean isMyTurn = false;
-    private int selectedCardNum = 0;
+    private int selectedCardNum = -1;
 
     // <summary> 名前の入力ダイアログを開いてユーザ名を取得 </summary>
     public String hearingUserName() {
@@ -132,9 +132,13 @@ public class GUI extends Frame implements ActionListener {
         labels[TURN].setHorizontalAlignment(JLabel.CENTER);
         panels[RIGHT_UP].add(labels[TURN]);
         // メッセージ（順番が来ているユーザとか勝者とか）
-        labels[MESSAGE].setText("対戦相手を探しています...");
-        labels[MESSAGE].setHorizontalAlignment(JLabel.CENTER);
-        panels[RIGHT_UP].add(labels[MESSAGE]);
+        labels[MESSAGE01].setText("対戦相手を探しています...");
+        labels[MESSAGE01].setHorizontalAlignment(JLabel.CENTER);
+        panels[RIGHT_UP].add(labels[MESSAGE01]);
+        // メッセージ（最終的な役とか）
+        labels[MESSAGE02].setText("");
+        labels[MESSAGE02].setHorizontalAlignment(JLabel.CENTER);
+        panels[RIGHT_UP].add(labels[MESSAGE02]);
 
         // <summary> ウィンドウを閉じる処理 </summary>
         addWindowListener(new WindowAdapter() {
@@ -152,16 +156,24 @@ public class GUI extends Frame implements ActionListener {
         labels[OPPONENT_NAME].setText(name);
     }
 
-    public void setUserCard(int index, Card card) {
-        userCards[index].setLabel(card.toString());// まだカード配布されていないので空
+    public void setUserCard(int index, Card[] cards) {
+        for (int i = 0; i < cards.length; i++) {
+            userCards[i].setLabel(cards[i].toString());
+        }
     }
 
-    public void setMessageLabel(boolean next) {
+    public void setOpponentCard(int index, Card[] cards) {
+        for (int i = 0; i < cards.length; i++) {
+            opponentCards[i].setLabel(cards[i].toString());
+        }
+    }
+
+    public void setChangeUserLabel(boolean next) {
         isMyTurn = next;
         if (next) {
-            labels[MESSAGE].setText("あなたの番です");
+            labels[MESSAGE01].setText("あなたの番です");
         } else {
-            labels[MESSAGE].setText("相手の番です");
+            labels[MESSAGE01].setText("相手の番です");
         }
     }
 
@@ -177,6 +189,11 @@ public class GUI extends Frame implements ActionListener {
         }
     }
 
+    public void setHands() {
+        // カード開示
+        // 役開示
+    }
+
     // <summary>ボタンが押された時の処理</summary>
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -186,8 +203,12 @@ public class GUI extends Frame implements ActionListener {
         }
         String buttonType = ae.getActionCommand();
         if (buttonType == operationButtons[EXCHANGE].getLabel()) {
-            // 交換が押された
-            Client.sendOpperation("EXCHANGE " + selectedCardNum);
+            if (selectedCardNum != -1) {
+                // 交換が押された
+                Client.sendOpperation("EXCHANGE " + selectedCardNum);
+                selectedCardNum = -1;
+            }
+
         } else if (buttonType == operationButtons[FINISH].getLabel()) {
             // ターン終了が押された
             Client.sendOpperation("OPERATIONEND");

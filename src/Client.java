@@ -96,9 +96,10 @@ public class Client {
                                         }
                                     }
                                     // 手札を配る
-                                    setUserCard(userNumber, dealer);
+                                    gui.setUserCard(userNumber, dealer.getHands()[userNumber]);
+                                    // setUserCard(userNumber, dealer);
                                     // 先行後行反映
-                                    gui.setMessageLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
+                                    gui.setChangeUserLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
                                     // ターン数反映
                                     gui.setTurnLabel(dealer.getCount_Of_Turn());
                                 } catch (Exception e) {
@@ -115,7 +116,8 @@ public class Client {
                                     int number = data_in.readInt();
                                     Card newCard = dealer.getDeck()[mark][number - 1];
                                     newCard = dealerLogic.exchangeCard(dealer, cardNum, newCard);
-                                    setUserCard(userNumber, dealer);
+                                    gui.setUserCard(userNumber, dealer.getHands()[userNumber]);
+                                    // setUserCard(userNumber, dealer);
                                     if (dealer.getNum_Of_TurnUser() == userNumber) {
                                         out.println("OPERATIONEND");
                                     }
@@ -127,7 +129,7 @@ public class Client {
                                 try {
                                     dealerLogic.opperationEnd(dealer);
                                     // 先行後行反映
-                                    gui.setMessageLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
+                                    gui.setChangeUserLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
                                     // ターン数反映
                                     gui.setTurnLabel(dealer.getCount_Of_Turn());
                                 } catch (Exception e) {
@@ -135,7 +137,7 @@ public class Client {
                                 }
                                 break;
                             case "GAMEEND":
-                                gui.setMessageLabel(false);
+                                gui.setChangeUserLabel(false);
                                 dealerLogic.gameEnd(dealer);
                                 // 勝者をGUIに反映
                                 String winnerPlayer = null;
@@ -190,11 +192,11 @@ public class Client {
         }
     }
 
-    /* <summary> GUIに手札を反映する </summary> */
-    private void setUserCard(int userNumber, Dealer dealer) {
-        Card[][] hands = dealer.getHands();
-        for (int i = 0; i < hands[userNumber].length; i++) {
-            gui.setUserCard(i, hands[userNumber][i]);
-        }
-    }
+    // /* <summary> GUIに手札を反映する </summary> */
+    // private void setUserCard(int userNumber, Dealer dealer) {
+    // Card[][] hands = dealer.getHands();
+    // for (int i = 0; i < hands[userNumber].length; i++) {
+    // gui.setUserCard(i, hands[userNumber][i]);
+    // }
+    // }
 }
