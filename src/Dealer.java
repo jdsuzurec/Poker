@@ -28,9 +28,6 @@ public class Dealer implements Serializable {
 
     public Dealer() {
         System.out.println("Dealerインスタンス生成");
-        // setDeck();
-        // setFirstHands();
-        // nextTurn();
     }
 
     public int getNUM_OF_MARK() {

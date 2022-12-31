@@ -147,9 +147,9 @@ public class JudgementHand {
 
     /* <summary> フラッシュ（一種類のスーツだけで構成された役）か判定 </summary> */
     private boolean isFlush(Card[] cards) {
-        int tempMark = cards[0].getMark_Integer();
+        int tempMark = cards[0].getSuit_Integer();
         for (Card card : cards) {
-            if (card.getMark_Integer() != tempMark) {
+            if (card.getSuit_Integer() != tempMark) {
                 return false;
             }
         }

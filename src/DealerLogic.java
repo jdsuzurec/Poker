@@ -1,5 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class DealerLogic {
@@ -86,7 +84,7 @@ public class DealerLogic {
         // 返すカードの所持状態を偽にして
         leaveCard.setIsHave(false);
         // 山札に反映
-        dealer.setDeckCard(leaveCard.getMark_Integer(), cardNum, leaveCard);
+        dealer.setDeckCard(leaveCard.getSuit_Integer(), cardNum, leaveCard);
         dealer.setHand(dealer.getNum_Of_TurnUser(), cardNum, null);
         // printHands(dealer);
         // printDeck(dealer);
@@ -164,16 +162,16 @@ public class DealerLogic {
     }
 
     /* <summary> デバック用 山札表示 </summary> */
-    private void printDeck(Dealer dealer) {
-        for (Card[] cards : dealer.getDeck()) {
-            for (Card card : cards) {
-                if (card == null) {
-                    System.out.print("null, ");
-                } else {
-                    System.out.print(card.toString() + "( " + card.getIsHave() + " ), ");
-                }
-            }
-            System.out.println();
-        }
-    }
+    // private void printDeck(Dealer dealer) {
+    // for (Card[] cards : dealer.getDeck()) {
+    // for (Card card : cards) {
+    // if (card == null) {
+    // System.out.print("null, ");
+    // } else {
+    // System.out.print(card.toString() + "( " + card.getIsHave() + " ), ");
+    // }
+    // }
+    // System.out.println();
+    // }
+    // }
 }

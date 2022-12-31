@@ -1,50 +1,60 @@
 
 /*
  * <summary>
- * カードに関する情報を保持
+ * カード情報（Model）
  * </summary>
  */
 import java.io.Serializable;
 
 public class Card implements Serializable {
-    private final int A = 1, J = 11, Q = 12, K = 13;
+    // #region field
+    /* <summary> スーツ </summary> */
+    private String suit_str;
+    private int suit_num;
+    /* <summary> マジックナンバー（スーツ） </summary> */
     private final int SPADE = 0, HEART = 1, DIAMOND = 2, CLOVER = 3;
-    private String mark_str;
-    private int mark_num;
+    /* <summary> 数位 </summary> */
     private int number;
+    /* <summary> マジックナンバー（ロイヤル） </summary> */
+    private final int J = 11, Q = 12, K = 13, A = 1;
+    /* <summary> 所持状況 </summary> */
     private boolean isHave;
+    // #endregion field
 
-    public Card(int mark_num, int number) {
-        setMark(mark_num);
+    // #region constructor
+    public Card(int suit_num, int number) {
+        setSuit(suit_num);
         this.number = number;
-        this.isHave = false;// 最初は手札ではない
+        this.isHave = false;// 最初は全て手札ではない
+    }
+    // #endregion constructor
+
+    // #region getter setter
+    private String getSuit() {
+        return suit_str;
     }
 
-    private String getMark() {
-        return mark_str;
+    public int getSuit_Integer() {
+        return suit_num;
     }
 
-    public int getMark_Integer() {
-        return mark_num;
-    }
-
-    private void setMark(int mark_num) {
-        switch (mark_num) {
+    private void setSuit(int suit_num) {
+        switch (suit_num) {
             case SPADE:
-                mark_str = "♠︎";
-                this.mark_num = SPADE;
+                suit_str = "♠︎";
+                this.suit_num = SPADE;
                 break;
             case HEART:
-                mark_str = "♥";
-                this.mark_num = HEART;
+                suit_str = "♥";
+                this.suit_num = HEART;
                 break;
             case DIAMOND:
-                mark_str = "♦︎";
-                this.mark_num = DIAMOND;
+                suit_str = "♦︎";
+                this.suit_num = DIAMOND;
                 break;
             case CLOVER:
-                this.mark_str = "♣︎";
-                this.mark_num = CLOVER;
+                this.suit_str = "♣︎";
+                this.suit_num = CLOVER;
                 break;
             default:
                 break;
@@ -77,11 +87,11 @@ public class Card implements Serializable {
     public void setIsHave(boolean isHave) {
         this.isHave = isHave;
     }
+    // #endregion getter setter
 
+    // #region public function
     public String toString() {
-        return getMark() + " : " + getNumberString();
+        return getSuit() + " : " + getNumberString();
     }
+    // #endregion public function
 }
-
-// カード型のものを互いに受け渡す
-// GUIに反映するときString型にする
