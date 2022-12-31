@@ -18,7 +18,7 @@ public class Dealer implements Serializable {
     private final int NUM_OF_CARD = 5;// プレイヤーのカード所持数
     private Card[][] hands = new Card[NUM_OF_PLAYER][NUM_OF_CARD];// 手札
     /* <summary> 勝敗判断要素 </summary> */
-    private int[] handStrength = new int[NUM_OF_PLAYER];// 最終的な役の強さ（数値）
+    private int[] handStrength = new int[NUM_OF_PLAYER];// 最終的な役の強さ（数値）低い方が強い
     private String[] handNames = new String[NUM_OF_PLAYER];// 最終的な役の名称
     private int winnerNumber;// 勝者のプレイヤー番号（-1なら引き分け）
     /* <summary> 進行状況情報 </summary> */
