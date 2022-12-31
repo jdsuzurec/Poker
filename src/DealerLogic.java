@@ -15,8 +15,8 @@ public class DealerLogic {
     /* <summary> 山札を作成 </summary> */
     private void createDeck(Dealer dealer) {
         Card[][] deck = dealer.getDeck();
-        for (int mark = 0; mark < dealer.getNUM_OF_MARK(); mark++) {
-            for (int number = 1; number <= dealer.getNUM_OF_CARDNUM(); number++) {
+        for (int mark = 0; mark < dealer.getNUM_OF_SUIT(); mark++) {
+            for (int number = 1; number <= dealer.getNUM_OF_NUM(); number++) {
                 deck[mark][number - 1] = new Card(mark, number);
             }
         }
@@ -40,8 +40,8 @@ public class DealerLogic {
     private Card dealOneCard(Dealer dealer) {
         // ランダムに山札からカードを取得（山札のカードが出てくるまでランダム値を振り直す）
         while (true) {
-            int mark = random.nextInt(dealer.getNUM_OF_MARK());
-            int number = random.nextInt(dealer.getNUM_OF_CARDNUM());
+            int mark = random.nextInt(dealer.getNUM_OF_SUIT());
+            int number = random.nextInt(dealer.getNUM_OF_NUM());
             Card card = dealer.getDeck()[mark][number];
             if (!card.getIsHave()) {
                 // カードの所持状態を真にしてから返す
@@ -95,7 +95,7 @@ public class DealerLogic {
         // 総行動回数をインクリメント
         dealer.incrementCount_Of_Operations();
         // プレイヤー数で割り切れる総行動回数なら、次のターンに進む
-        if (dealer.getCount_Of_Operations() % dealer.getPlayerNames().length == 0) {
+        if (dealer.getCount_Of_Operations() % dealer.getNUM_OF_PLAYER() == 0) {
             // ただし行動回数上限に達した場合はゲーム終了
             if (dealer.getNUM_OF_OPERATIONS() == dealer.getCount_Of_Operations()) {
                 return "GAMEEND";

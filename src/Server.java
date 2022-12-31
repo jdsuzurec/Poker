@@ -166,7 +166,7 @@ class ServerThread extends Thread {
                             Card exchangeCard = dealerLogic.exchangeCard(Server.getDealer(), changeCardNum, null);
                             Server.sendForAllPlayers_String("EXCHANGE");
                             Server.sendForAllPlayers_Integer(changeCardNum);
-                            Server.sendForAllPlayers_Integer(exchangeCard.getMark_Integer());
+                            Server.sendForAllPlayers_Integer(exchangeCard.getSuit_Integer());
                             Server.sendForAllPlayers_Integer(exchangeCard.getNumber());
                             break;
                         /* <summary>オペレーション（行動）終了</summary> */
