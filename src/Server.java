@@ -183,7 +183,7 @@ class ServerThread extends Thread {
                                     System.out.println("今" + Server.getDealer().getCount_Of_Turn() + "ターンめ");
                                     System.out.println(
                                             "次は" + Server.getDealer().getPlayerNames()[Server.getDealer()
-                                                    .getNum_Of_TurnUser()] + "の番");
+                                                    .getNum_Of_TurnPlayer()] + "の番");
                                     Server.sendForAllPlayers_String("CONTINUEGAME");
                                     // Server.sendForAllPlayers_Object(Server.getDealer());
                                     break;
