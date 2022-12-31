@@ -132,7 +132,7 @@ public class Dealer implements Serializable {
     }
 
     // 現在行動ターンが来ているユーザー番号を返す
-    public int getNum_Of_TurnUser() {
+    public int getNum_Of_TurnPlayer() {
         return count_of_operations % NUM_OF_PLAYER;
     }
     // #region getter setter

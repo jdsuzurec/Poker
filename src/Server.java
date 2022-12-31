@@ -12,31 +12,46 @@ import java.io.IOException;
 * </summary>
 */
 public class Server {
+    // #region field
+    /* <summary> ポート番号 </summary> */
     final private static int PORT_NUMBER = 10000;
+    /* <summary> 最大接続数 </summary> */
     final private static int MAX_CONNECTION = 2;
-    public static String[] userNames = new String[MAX_CONNECTION];
+    /* <summary> 接続しているプレイヤー名 </summary> */
+    public static String[] playerNames = new String[MAX_CONNECTION];
+    /* <summary> クライアントへの送信用 </summary> */
     private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
     private static ObjectOutputStream[] obj_out = new ObjectOutputStream[MAX_CONNECTION];
+    /* <summary> ディーラー </summary> */
     private static Dealer dealer = new Dealer();
+    // #endregion field
 
+    // #region getter
+    public static int getMAX_CONNECTION() {
+        return MAX_CONNECTION;
+    }
+
+    public static Dealer getDealer() {
+        return dealer;
+    }
+    // #endregion getter
+
+    // #region public function
+    // <summary> ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成 </summary>
     public static void main(String[] args) {
-        // for (int i = 0; i < 10; i++) {
-        // System.out.println(i % MAX_CONNECTION);
-        // }
-
-        // TCPポートを指定してサーバソケットを作成
+        // サーバソケット
         ServerSocket serverSocket;
-        int connection_number = 0; // 接続者数
-
-        // <summary> ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成 </summary>
+        // 現状の接続者数
+        int connection_number = 0;
         try {
+            // サーバーソケット作成
             serverSocket = new ServerSocket(PORT_NUMBER);
             System.out.println("Serverが起動しました(port=" + serverSocket.getLocalPort() + ")");
             while (true) {
                 try {
-                    // クライアントからの接続を待ち受け（accept）
+                    // クライアントからの接続を待ち受け
                     Socket socket = serverSocket.accept();
-                    // 定員が上限に達していない限り接続を受け付け、ソケットを作成する
+                    // 定員が上限に達していない限り接続を受け付け、スレッドを作成する
                     if (connection_number < MAX_CONNECTION) {
                         data_out[connection_number] = new DataOutputStream(socket.getOutputStream());
                         obj_out[connection_number] = new ObjectOutputStream(socket.getOutputStream());
@@ -44,26 +59,15 @@ public class Server {
                         connection_number++;
                     }
                 } catch (IOException e) {
-                    System.out.println("ここ1");
                     e.printStackTrace();
                 }
-                // finally {
-                // System.out.println("ここ2");
-                // try {
-                // if (serverSocket != null) {
-                // serverSocket.close();
-                // }
-                // } catch (IOException e) {
-                // e.printStackTrace();
-                // }
-                // }
             }
         } catch (Exception e) {
-            System.out.println("ここ3");
             e.printStackTrace();
         }
     }
 
+    // <summary> プレイヤー全員に指定の文字列を送信 </summary>
     public static void sendForAllPlayers_String(String str) {
         for (DataOutputStream dos : data_out) {
             try {
@@ -75,6 +79,7 @@ public class Server {
         }
     }
 
+    // <summary> プレイヤー全員に指定の数値を送信 </summary>
     public static void sendForAllPlayers_Integer(int num) {
         for (DataOutputStream dos : data_out) {
             try {
@@ -86,6 +91,7 @@ public class Server {
         }
     }
 
+    // <summary> プレイヤー全員に指定のオブジェクトを送信 </summary>
     public static void sendForAllPlayers_Object(Object obj) {
         for (ObjectOutputStream oos : obj_out) {
             try {
@@ -96,57 +102,51 @@ public class Server {
             }
         }
     }
-
-    public static void sendForOnePlayer_Object(int userNumber, Object obj) {
-        try {
-            obj_out[userNumber].writeObject(obj);
-            obj_out[userNumber].flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static int getMAX_CONNECTION() {
-        return MAX_CONNECTION;
-    }
-
-    public static Dealer getDealer() {
-        return dealer;
-    }
+    // #endregion public function
 }
 
 /*
  * <summary>
- * 各クライアントの処理
+ * 各スレッドの処理
  * </summary>
  */
 class ServerThread extends Thread {
-    private int number;
+    // #region field
+    /* <summary> プレイヤー番号 </summary> */
+    private int playerNumber;
+    /* <summary> ソケット </summary> */
     private Socket socket;
+    /* <summary> ディーラー操作 </summary> */
     private DealerLogic dealerLogic = new DealerLogic();
+    // #endregion field
 
-    public ServerThread(Socket socket, int number) {
+    // #region constructor
+    public ServerThread(Socket socket, int playerNumber) {
         this.socket = socket;
-        this.number = number;
+        this.playerNumber = playerNumber;
     }
+    // #endregion constructor
 
+    // #region public function
     public void run() {
         try {
             // クライアントからの受取用
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // クライアントへの送信用
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
             // 名前が送られてくるので登録
-            Server.userNames[number] = in.readLine();
-            System.out.println(number + "番目：" + Server.userNames[number] + "さんが入室しました");
-            // ユーザ番号を返す
-            out.writeInt(number);
+            Server.playerNames[playerNumber] = in.readLine();
+            System.out.println(playerNumber + "番目：" + Server.playerNames[playerNumber] + "さんが入室しました");
+            // プレイヤー番号を返す
+            out.writeInt(playerNumber);
             out.flush();
 
-            // 2人目のプレイヤーだった場合、2人を選手登録する
-            if (number == Server.getMAX_CONNECTION() - 1) {
-                Server.getDealer().setPlayerNames(Server.userNames);
-                // ゲーム開始
+            // 2人目のプレイヤーだった場合、プレイヤー登録する
+            if (playerNumber == Server.getMAX_CONNECTION() - 1) {
+                // プレイヤー名登録
+                Server.getDealer().setPlayerNames(Server.playerNames);
+                // ゲーム開始処理
                 Server.sendForAllPlayers_String("START");
                 dealerLogic.gameStart(Server.getDealer());
                 Server.sendForAllPlayers_Object(Server.getDealer());
@@ -157,7 +157,7 @@ class ServerThread extends Thread {
                 // 送られてきたメッセージ読み込み
                 String message = in.readLine();
                 if (message != null) {
-                    System.out.println(Server.userNames[number] + "：" + message);
+                    System.out.println(Server.playerNames[playerNumber] + "：" + message);
                     switch (message) {
                         /* <summary>カード交換</summary> */
                         case "EXCHANGE":
@@ -212,4 +212,5 @@ class ServerThread extends Thread {
             System.out.println("切断されました " + socket.getRemoteSocketAddress());
         }
     }
+    // #endregion public function
 }

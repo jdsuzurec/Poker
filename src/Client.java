@@ -11,20 +11,22 @@ import java.net.UnknownHostException;
 * </summary>
 */
 public class Client {
+    // #region field
+    /* <summary> ポート番号 </summary> */
     final static int PORT_NUMBER = 10000;
+    /* <summary> 最大接続数 </summary> */
     final private int MAX_CONNECTION = 2;
-    private static String userName;
+    /* <summary> プレイヤー名 </summary> */
+    private static String playerName;
+    /* <summary> ゲーム画面GUI </summary> */
     private static GUI gui;
+    /* <summary> サーバーへの送信用 </summary> */
     private static PrintWriter out;
+    // #endregion field
 
-    public static void main(String[] args) {
-        gui = new GUI();
-        gui.setVisible(true);
-        new Client();
-    }
-
-    // ソケット作成、ユーザー名を取得してスレッド生成
+    // #region constructor
     public Client() {
+        // ソケット作成
         Socket socket = null;
         try {
             socket = new Socket("localhost", PORT_NUMBER);
@@ -35,21 +37,47 @@ public class Client {
             e.printStackTrace();
             System.err.println("エラーが発生しました: " + e);
         }
-        userName = gui.hearingUserName();
-        new ClientThread(socket, userName).start();
+        // ユーザー名を取得してスレッド生成
+        playerName = gui.hearingPlayerName();
+        new ClientThread(socket, playerName).start();
     }
+    // #endregion constructor
 
+    // #region public function
+    public static void main(String[] args) {
+        // ゲーム画面を生成
+        gui = new GUI();
+        gui.setVisible(true);
+        // スレッド作成
+        new Client();
+    }
+    // #endregion public function
+
+    /*
+     * <summary>
+     * 各スレッドの処理
+     * </summary>
+     */
     public class ClientThread extends Thread {
+        // #region field
+        /* <summary> ソケット </summary> */
         private Socket socket;
-        private String userName;
+        /* <summary> プレイヤー名 </summary> */
+        private String playerName;
+        /* <summary> ディーラー </summary> */
         private Dealer dealer;
-        private DealerLogic dealerLogic = new DealerLogic();;
+        /* <summary> ディーラー操作 </summary> */
+        private DealerLogic dealerLogic = new DealerLogic();
+        // #endregion field
 
-        public ClientThread(Socket socket, String userName) {
+        // #region constructor
+        public ClientThread(Socket socket, String playerName) {
             this.socket = socket;
-            this.userName = userName;
+            this.playerName = playerName;
         }
+        // #endregion constructor
 
+        // #region public function
         public void run() {
             try {
                 // サーバーからの受取用
@@ -57,19 +85,14 @@ public class Client {
                 ObjectInputStream obj_in = new ObjectInputStream(socket.getInputStream());
                 // サーバーへの送信用
                 out = new PrintWriter(socket.getOutputStream(), true);
-                // 最初に名前の登録を行う
-                out.println(userName);
 
+                // 最初に名前の登録を行う
+                out.println(playerName);
                 // ユーザ番号を取得
                 int userNumber = data_in.readInt();
-                // int userNumber = obj_in.readInt();
-                // userNumber = Integer.parseInt(data_in.readUTF());
-                System.out.println("あなたは" + userNumber + "番目：" + userName + "です");
-
+                System.out.println("あなたは" + userNumber + "番目：" + playerName + "です");
                 // ゲームウィンドウを作成
                 gui.createGameWindow();
-                // プレイヤーたちの名前を反映
-                // 配布されたカードを反映、
 
                 // 無限ループでソケットへの入力を監視して、送られてきたデータを処理する
                 while (true) {
@@ -78,25 +101,26 @@ public class Client {
                     if (message != null) {
                         System.out.println("サーバーからのメッセージ：" + message);
                         switch (message) {
+                            // ゲーム開始
                             case "START":
                                 System.out.println("ゲーム開始ですよ");
                                 try {
                                     dealer = (Dealer) obj_in.readObject();
-                                    // 名前を配って表示させる
+                                    // 名前をGUIに反映
                                     String[] playerNames = dealer.getPlayerNames();
                                     for (int i = 0; i < MAX_CONNECTION; i++) {
                                         if (i == userNumber) {
-                                            gui.setUserLabel(playerNames[i]);
+                                            gui.setPlayerLabel(playerNames[i]);
                                         } else {
                                             gui.setOpponentLabel(playerNames[i]);
                                         }
                                     }
-                                    // 手札を配る
-                                    gui.setUserCard(dealer.getHands()[userNumber]);
-                                    // setUserCard(userNumber, dealer);
-                                    // 先行後行反映
-                                    gui.setChangeUserLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
-                                    // ターン数反映
+                                    // 手札をGUIに反映
+                                    gui.setPlayerCard(dealer.getHands()[userNumber]);
+                                    // 行動可能プレイヤーをGUIに反映
+                                    gui.setChangePlayerLabel(
+                                            (dealer.getNum_Of_TurnPlayer() == userNumber ? true : false));
+                                    // 現在のターン数をGUIに反映
                                     gui.setTurnLabel(dealer.getCount_Of_Turn());
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -112,9 +136,8 @@ public class Client {
                                     int number = data_in.readInt();
                                     Card newCard = dealer.getDeck()[mark][number - 1];
                                     newCard = dealerLogic.exchangeCard(dealer, cardNum, newCard);
-                                    gui.setUserCard(dealer.getHands()[userNumber]);
-                                    // setUserCard(userNumber, dealer);
-                                    if (dealer.getNum_Of_TurnUser() == userNumber) {
+                                    gui.setPlayerCard(dealer.getHands()[userNumber]);
+                                    if (dealer.getNum_Of_TurnPlayer() == userNumber) {
                                         out.println("OPERATIONEND");
                                     }
                                 } catch (Exception e) {
@@ -125,7 +148,8 @@ public class Client {
                                 try {
                                     dealerLogic.opperationEnd(dealer);
                                     // 先行後行反映
-                                    gui.setChangeUserLabel((dealer.getNum_Of_TurnUser() == userNumber ? true : false));
+                                    gui.setChangePlayerLabel(
+                                            (dealer.getNum_Of_TurnPlayer() == userNumber ? true : false));
                                     // ターン数反映
                                     gui.setTurnLabel(dealer.getCount_Of_Turn());
                                 } catch (Exception e) {
@@ -133,7 +157,7 @@ public class Client {
                                 }
                                 break;
                             case "GAMEEND":
-                                gui.setChangeUserLabel(false);
+                                gui.setChangePlayerLabel(false);
                                 dealerLogic.gameEnd(dealer);
                                 // 勝者をGUIに反映
                                 String winnerPlayer = null;
@@ -142,10 +166,10 @@ public class Client {
                                 }
                                 gui.setWinnerName(winnerPlayer);
                                 // 最終的なカードをGUIに反映
-                                gui.setUserCard(dealer.getHands()[userNumber]);
+                                gui.setPlayerCard(dealer.getHands()[userNumber]);
                                 gui.setOpponentCard(dealer.getHands()[userNumber == 0 ? 1 : 0]);
                                 // 最終的な役をGUIに反映
-                                gui.setUserHand(dealer.getPlayerNames()[userNumber] + " : "
+                                gui.setPlayerHand(dealer.getPlayerNames()[userNumber] + " : "
                                         + dealer.getHandNames()[userNumber]);
                                 gui.setOpponentHand(dealer.getPlayerNames()[userNumber == 0 ? 1 : 0] + " : "
                                         + dealer.getHandNames()[userNumber == 0 ? 1 : 0]);
@@ -163,15 +187,6 @@ public class Client {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // finally {
-            // if (socket != null) {
-            // try {
-            // socket.close();
-            // } catch (IOException e) {
-            // e.printStackTrace();
-            // }
-            // }
-            // }
         }
     }
 
@@ -193,12 +208,5 @@ public class Client {
                 break;
         }
     }
-
-    // /* <summary> GUIに手札を反映する </summary> */
-    // private void setUserCard(int userNumber, Dealer dealer) {
-    // Card[][] hands = dealer.getHands();
-    // for (int i = 0; i < hands[userNumber].length; i++) {
-    // gui.setUserCard(i, hands[userNumber][i]);
-    // }
-    // }
+    // #endregion public function
 }

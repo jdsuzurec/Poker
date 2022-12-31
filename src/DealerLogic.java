@@ -76,7 +76,7 @@ public class DealerLogic {
             newCard.setIsHave(true);
         }
         // 手札に新しいカードをセット
-        dealer.setHand(dealer.getNum_Of_TurnUser(), cardNum, newCard);
+        dealer.setHand(dealer.getNum_Of_TurnPlayer(), cardNum, newCard);
         System.out.println("新たなカード:" + newCard.toString());
         printHands(dealer);
         return newCard;
@@ -87,13 +87,13 @@ public class DealerLogic {
      * <param name="numOfExchangedCard">交換するカードが何枚目か</param>
      */
     private void leaveOneCard(Dealer dealer, int cardNum) {
-        Card leaveCard = dealer.getHands()[dealer.getNum_Of_TurnUser()][cardNum];
+        Card leaveCard = dealer.getHands()[dealer.getNum_Of_TurnPlayer()][cardNum];
         System.out.println("返すカード:" + leaveCard.toString());
         // 返すカードの所持状態を偽にして
         leaveCard.setIsHave(false);
         // 山札に返す
         dealer.setDeckCard(leaveCard.getSuit_Integer(), cardNum, leaveCard);
-        dealer.setHand(dealer.getNum_Of_TurnUser(), cardNum, null);
+        dealer.setHand(dealer.getNum_Of_TurnPlayer(), cardNum, null);
     }
 
     /* <summary> プレイヤーの行動終了後、ゲームが次にどう進行するかを返す </summary> */
