@@ -65,7 +65,7 @@ public class Card implements Serializable {
         return number;
     }
 
-    private String getNumberString() {
+    private String getNumber_String() {
         switch (number) {
             case A:
                 return "A";
@@ -91,7 +91,7 @@ public class Card implements Serializable {
 
     // #region public function
     public String toString() {
-        return getSuit() + " : " + getNumberString();
+        return getSuit() + " : " + getNumber_String();
     }
     // #endregion public function
 }
