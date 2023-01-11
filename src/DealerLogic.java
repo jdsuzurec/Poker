@@ -1,24 +1,22 @@
 import java.util.Random;
 
-/*
- * <summary>
+/**
  * Dealerを操作するクラス
- * </summary>
  */
 public class DealerLogic {
     private Random random = new Random();
 
-    /* <summary> ゲームスタート </summary> */
+    /**  ゲームをスタートする処理  */
     public void gameStart(Dealer dealer) {
         // 山札を作成
         createDeck(dealer);
         // 最初の手札を決定
         dealFirstHands(dealer);
-        // ターン進行（1ターンめ）
+        // ターンを進行する（1ターンめ）
         dealer.incrementCount_Of_Turn();
     }
 
-    /* <summary> 山札を作成 </summary> */
+    /**  山札を作成する処理  */
     private void createDeck(Dealer dealer) {
         // スーツ数×数位で構成される山札を作成
         Card[][] deck = dealer.getDeck();
@@ -31,7 +29,7 @@ public class DealerLogic {
         System.out.println("山札を生成しました");
     }
 
-    /* <summary> 全プレイヤーの最初の手札を決定 </summary> */
+    /**  全プレイヤーの最初の手札を決定  */
     private void dealFirstHands(Dealer dealer) {
         // プレイヤー数×カード所持数で構成されるカードを作成
         Card[][] hands = dealer.getHands();
@@ -45,7 +43,10 @@ public class DealerLogic {
         dealer.setHands(hands);
     }
 
-    /* <summary> ランダムに山札から1枚カードを返す </summary> */
+    /**  
+     * ランダムに山札から1枚カードを返す処理
+     * @return Card
+    */
     private Card dealOneCard(Dealer dealer) {
         // ランダムに山札からカードを取得（山札のカードが出てくるまでランダム値を振り直す）
         while (true) {
@@ -60,19 +61,20 @@ public class DealerLogic {
         }
     }
 
-    /*
-     * <summary> 手札のカードと山札のカードを交換する </summary>
-     * <param name="numOfExchangedCard"> 交換するカードが何枚目か</param>
+    /**
+     *  手札のカードと山札のカードを交換する 
+     * @param cafdNum(山札に戻すカードが何枚目か,0~4),reservedCard（既に新たなカードが決まっていたら指定する,nullなら山札から引く）
+     * @return Card
      */
-    public Card exchangeCard(Dealer dealer, int cardNum, Card card) {
+    public Card exchangeCard(Dealer dealer, int cardNum, Card reservedCard) {
         // 指定のカードを山札に戻す
         leaveOneCard(dealer, cardNum);
         // 山札から新たなカードを引く
         Card newCard;
-        if (card == null) {
+        if (reservedCard == null) {
             newCard = dealOneCard(dealer);
         } else {
-            newCard = card;
+            newCard = reservedCard;
             newCard.setIsHave(true);
         }
         // 手札に新しいカードをセット
@@ -82,9 +84,9 @@ public class DealerLogic {
         return newCard;
     }
 
-    /*
-     * <summary> 指定のカードを山札に戻す </summary>
-     * <param name="numOfExchangedCard">交換するカードが何枚目か</param>
+    /**
+     *  指定のカードを山札に戻す 
+     * @param cafdNum(山札に戻すカードが何枚目か,0~4)
      */
     private void leaveOneCard(Dealer dealer, int cardNum) {
         Card leaveCard = dealer.getHands()[dealer.getNum_Of_TurnPlayer()][cardNum];
@@ -96,7 +98,10 @@ public class DealerLogic {
         dealer.setHand(dealer.getNum_Of_TurnPlayer(), cardNum, null);
     }
 
-    /* <summary> プレイヤーの行動終了後、ゲームが次にどう進行するかを返す </summary> */
+    /**  
+     * プレイヤーの行動終了後、ゲームが次にどう進行するかを返す処理
+     *  @return 次のゲーム進行コマンド（プレイヤー変更,ターン進行,ゲーム終了）
+     *  */
     public String opperationEnd(Dealer dealer) {
         // プレイヤー総行動回数をインクリメント
         dealer.incrementCount_Of_Operations();
@@ -115,15 +120,17 @@ public class DealerLogic {
         return "CHANGEPLAYER";
     }
 
-    /* <summary> ゲーム終了 </summary> */
-    public void gameEnd(Dealer dealer) {
-        // 勝者判定
-        JudgementHand judgementHand = new JudgementHand();
+    /**  勝者を判定する処理  */
+    public void judgeTheWinner(Dealer dealer) {
+        // 役判定を行うJudgementHandLogicクラスを利用する
+        JudgementHandLogic judgementHand = new JudgementHandLogic();
+        // プレイヤー全員の手札を取得
         Card[][] hands = dealer.getHands();
         int winnerNumber = 0;// 勝者のプレイヤー番号
         int mostStrength = (int) Double.POSITIVE_INFINITY;// 最も強い役（数値）初期値は最弱値
-        int[] handStrength = dealer.getHandStrength();
-        String[] handNames = dealer.getHandNames();
+        int[] handStrength = dealer.getHandStrength();//役の強さ
+        String[] handNames = dealer.getHandNames();//役の名前
+
         for (int i = 0; i < hands.length; i++) {
             // 役の強さ（数値）を取得
             handStrength[i] = judgementHand.judgementHand(hands[i]);
@@ -145,6 +152,7 @@ public class DealerLogic {
                 break;
             }
         }
+        // 判定
         if (isDraw) {
             winnerNumber = -1;
         }
@@ -158,7 +166,7 @@ public class DealerLogic {
         dealer.setWinnerNumber(winnerNumber);
     }
 
-    /* <summary> デバック用 手札表示 </summary> */
+    /**  デバック用 手札表示  */
     public void printHands(Dealer dealer) {
         for (Card[] cards : dealer.getHands()) {
             for (Card card : cards) {
@@ -172,7 +180,7 @@ public class DealerLogic {
         }
     }
 
-    /* <summary> デバック用 山札表示 </summary> */
+    /**  デバック用 山札表示  */
     // private void printDeck(Dealer dealer) {
     // for (Card[] cards : dealer.getDeck()) {
     // for (Card card : cards) {

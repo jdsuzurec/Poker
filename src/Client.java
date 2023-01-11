@@ -5,26 +5,24 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-/*
-* <summary>
+/** 
 * サーバーと接続して、メッセージの送受信を行う
-* </summary>
 */
 public class Client {
-    // #region field
-    /* <summary> ポート番号 </summary> */
+    // start field
+    /*  ポート番号  */
     final static int PORT_NUMBER = 10000;
-    /* <summary> 最大接続数 </summary> */
+    /*  最大接続数  */
     final private int MAX_CONNECTION = 2;
-    /* <summary> プレイヤー名 </summary> */
+    /*  プレイヤー名  */
     private static String playerName;
-    /* <summary> ゲーム画面GUI </summary> */
+    /*  ゲーム画面GUI  */
     private static GUI gui;
-    /* <summary> サーバーへの送信用 </summary> */
+    /*  サーバーへの送信用  */
     private static PrintWriter out;
-    // #endregion field
+    // end field
 
-    // #region constructor
+    // start constructor
     public Client() {
         // ソケット作成
         Socket socket = null;
@@ -41,9 +39,9 @@ public class Client {
         playerName = gui.hearingPlayerName();
         new ClientThread(socket, playerName).start();
     }
-    // #endregion constructor
+    // end constructor
 
-    // #region public function
+    // start public function
     public static void main(String[] args) {
         // ゲーム画面を生成
         gui = new GUI();
@@ -51,33 +49,31 @@ public class Client {
         // スレッド作成
         new Client();
     }
-    // #endregion public function
+    // end public function
 
-    /*
-     * <summary>
+    /**
      * 各スレッドの処理
-     * </summary>
      */
     public class ClientThread extends Thread {
-        // #region field
-        /* <summary> ソケット </summary> */
+        // start field
+        /*  ソケット  */
         private Socket socket;
-        /* <summary> プレイヤー名 </summary> */
+        /*  プレイヤー名  */
         private String playerName;
-        /* <summary> ディーラー </summary> */
+        /*  ディーラー  */
         private Dealer dealer;
-        /* <summary> ディーラー操作 </summary> */
+        /*  ディーラー操作  */
         private DealerLogic dealerLogic = new DealerLogic();
-        // #endregion field
+        // end field
 
-        // #region constructor
+        // start constructor
         public ClientThread(Socket socket, String playerName) {
             this.socket = socket;
             this.playerName = playerName;
         }
-        // #endregion constructor
+        // end constructor
 
-        // #region public function
+        // start public function
         public void run() {
             try {
                 // サーバーからの受取用
@@ -127,7 +123,7 @@ public class Client {
                                 }
 
                                 break;
-                            /* <summary>交換したカードを受け取ってGUIに反映</summary> */
+                            /* 交換したカードを受け取ってGUIに反映 */
                             case "EXCHANGE":
                                 System.out.println("手札交換！");
                                 try {
@@ -158,7 +154,7 @@ public class Client {
                                 break;
                             case "GAMEEND":
                                 gui.setChangePlayerLabel(false);
-                                dealerLogic.gameEnd(dealer);
+                                dealerLogic.judgeTheWinner(dealer);
                                 // 勝者をGUIに反映
                                 String winnerPlayer = null;
                                 if (dealer.getWinnerNumber() != -1) {
@@ -190,7 +186,7 @@ public class Client {
         }
     }
 
-    /* <summary> GUIからカード交換やターン終了の命令を受け取ってサーバに送る </summary> */
+    /*  GUIからカード交換やターン終了の命令を受け取ってサーバに送る  */
     public static void sendOpperation(String opperation) {
         String[] opperation_split = opperation.split(" ");
         switch (opperation_split[0]) {
@@ -208,5 +204,5 @@ public class Client {
                 break;
         }
     }
-    // #endregion public function
+    // end public function
 }

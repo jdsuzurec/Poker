@@ -1,41 +1,39 @@
 
-/*
- * <summary>
+/**
  * ゲーム情報（Model）
- * </summary>
  */
 import java.io.Serializable;
 
 public class Dealer implements Serializable {
-    // #region field
-    /* <summary> 山札（deck）情報 </summary> */
+    // start field
+    /*  山札（deck）情報  */
     private final int NUM_OF_SUIT = 4, NUM_OF_NUM = 13;// スーツの数、数字の数
     private Card[][] deck = new Card[NUM_OF_SUIT][NUM_OF_NUM];
-    /* <summary> プレイヤーの名前情報 <summary> */
+    /*  プレイヤーの名前情報  */
     private final int NUM_OF_PLAYER = Server.getMAX_CONNECTION();
     private String[] playerNames = new String[NUM_OF_PLAYER];
-    /* <summary> 手札情報 </summary> */
+    /*  手札情報  */
     private final int NUM_OF_CARD = 5;// プレイヤーのカード所持数
     private Card[][] hands = new Card[NUM_OF_PLAYER][NUM_OF_CARD];// 手札
-    /* <summary> 勝敗判断要素 </summary> */
+    /*  勝敗判断要素  */
     private int[] handStrength = new int[NUM_OF_PLAYER];// 最終的な役の強さ（数値）低い方が強い
     private String[] handNames = new String[NUM_OF_PLAYER];// 最終的な役の名称
     private int winnerNumber;// 勝者のプレイヤー番号（-1なら引き分け）
-    /* <summary> 進行状況情報 </summary> */
+    /*  進行状況情報  */
     private final int NUM_OF_TURNS = 5;// ゲーム終了までのターン
     private int count_of_turn = 0;// 現在のターン
     private final int NUM_OF_OPERATIONS = NUM_OF_TURNS * NUM_OF_PLAYER;// ゲーム終了までのプレイヤー行動数
     private int count_of_operations = 0;// 現在のプレイヤー行動回数
-    // #endregion field
+    // end field
 
-    // #region constructor
+    // start constructor
     public Dealer() {
         System.out.println("Dealerインスタンス生成");
     }
-    // #endregion constructor
+    // end constructor
 
-    // #region getter setter
-    /* <summary> 山札（deck）情報 </summary> */
+    // start getter setter
+    /*  山札（deck）情報  */
     public int getNUM_OF_SUIT() {
         return NUM_OF_SUIT;
     }
@@ -52,12 +50,12 @@ public class Dealer implements Serializable {
         this.deck = deck;
     }
 
-    // 指定の場所（山札）に一枚セット
+    /** 指定の場所（山札）に一枚セット */ 
     public void setDeckCard(int mark, int number, Card card) {
         deck[mark][number] = card;
     }
 
-    /* <summary> プレイヤーの名前情報 <summary> */
+    /*  プレイヤーの名前情報  */
     public int getNUM_OF_PLAYER() {
         return NUM_OF_PLAYER;
     }
@@ -71,7 +69,7 @@ public class Dealer implements Serializable {
         System.out.println("プレイヤーを登録しました");
     }
 
-    /* <summary> 手札情報 </summary> */
+    /*  手札情報  */
     public int getNUM_OF_CARD() {
         return NUM_OF_CARD;
     }
@@ -84,12 +82,12 @@ public class Dealer implements Serializable {
         this.hands = hands;
     }
 
-    // 指定場所（手札）に一枚セット
+    /** 指定場所（手札）に一枚セット */ 
     public void setHand(int playerNum, int cardNum, Card card) {
         hands[playerNum][cardNum] = card;
     }
 
-    /* <summary> 勝敗判断要素 </summary> */
+    /*  勝敗判断要素  */
     public int[] getHandStrength() {
         return handStrength;
     }
@@ -114,7 +112,7 @@ public class Dealer implements Serializable {
         this.winnerNumber = winnerNumber;
     }
 
-    /* <summary> 進行状況情報 </summary> */
+    /*  進行状況情報  */
     public int getNUM_OF_TURNS() {
         return NUM_OF_TURNS;
     }
@@ -131,13 +129,13 @@ public class Dealer implements Serializable {
         return count_of_operations;
     }
 
-    // 現在行動ターンが来ているユーザー番号を返す
+    /** 現在行動ターンが来ているユーザー番号を返す */
     public int getNum_Of_TurnPlayer() {
         return count_of_operations % NUM_OF_PLAYER;
     }
-    // #region getter setter
+    // start getter setter
 
-    // #region public function
+    // start public function
     public void incrementCount_Of_Turn() {
         count_of_turn++;
     }
@@ -145,5 +143,5 @@ public class Dealer implements Serializable {
     public void incrementCount_Of_Operations() {
         count_of_operations++;
     }
-    // #endregion public function
+    // end public function
 }

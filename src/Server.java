@@ -6,27 +6,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 
-/*
-* <summary>
+/**
 * 複数クライアントからの接続を待ち受け、通信処理を行うスレッドを作成して起動
-* </summary>
 */
 public class Server {
-    // #region field
-    /* <summary> ポート番号 </summary> */
+    // start field
+    /*  ポート番号  */
     final private static int PORT_NUMBER = 10000;
-    /* <summary> 最大接続数 </summary> */
+    /*  最大接続数  */
     final private static int MAX_CONNECTION = 2;
-    /* <summary> 接続しているプレイヤー名 </summary> */
+    /*  接続しているプレイヤー名  */
     public static String[] playerNames = new String[MAX_CONNECTION];
-    /* <summary> クライアントへの送信用 </summary> */
+    /*  クライアントへの送信用  */
     private static DataOutputStream[] data_out = new DataOutputStream[MAX_CONNECTION];
     private static ObjectOutputStream[] obj_out = new ObjectOutputStream[MAX_CONNECTION];
-    /* <summary> ディーラー </summary> */
+    /*  ディーラー  */
     private static Dealer dealer = new Dealer();
-    // #endregion field
+    // end field
 
-    // #region getter
+    // start getter
     public static int getMAX_CONNECTION() {
         return MAX_CONNECTION;
     }
@@ -34,10 +32,13 @@ public class Server {
     public static Dealer getDealer() {
         return dealer;
     }
-    // #endregion getter
+    // end getter
 
-    // #region public function
-    // <summary> ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成 </summary>
+    // start public function
+    /**
+     * ソケット作成、サーバー起動、クライアント待ち受け、スレッド生成 
+     * @param args
+     */
     public static void main(String[] args) {
         // サーバソケット
         ServerSocket serverSocket;
@@ -67,7 +68,10 @@ public class Server {
         }
     }
 
-    // <summary> プレイヤー全員に指定の文字列を送信 </summary>
+    /**
+     * プレイヤー全員に指定の文字列を送信
+     * @param 送信する文字列
+     */
     public static void sendForAllPlayers_String(String str) {
         for (DataOutputStream dos : data_out) {
             try {
@@ -79,7 +83,10 @@ public class Server {
         }
     }
 
-    // <summary> プレイヤー全員に指定の数値を送信 </summary>
+    /**
+     * プレイヤー全員に指定の数値を送信
+     * @param 送信する数値
+     */
     public static void sendForAllPlayers_Integer(int num) {
         for (DataOutputStream dos : data_out) {
             try {
@@ -91,7 +98,10 @@ public class Server {
         }
     }
 
-    // <summary> プレイヤー全員に指定のオブジェクトを送信 </summary>
+    /**
+     * プレイヤー全員に指定のオブジェクトを送信 
+     * @param 送信するオブジェクト
+     */
     public static void sendForAllPlayers_Object(Object obj) {
         for (ObjectOutputStream oos : obj_out) {
             try {
@@ -102,32 +112,30 @@ public class Server {
             }
         }
     }
-    // #endregion public function
+    // end public function
 }
 
-/*
- * <summary>
+/**
  * 各スレッドの処理
- * </summary>
  */
 class ServerThread extends Thread {
-    // #region field
-    /* <summary> プレイヤー番号 </summary> */
+    // start field
+    /*  プレイヤー番号  */
     private int playerNumber;
-    /* <summary> ソケット </summary> */
+    /*  ソケット  */
     private Socket socket;
-    /* <summary> ディーラー操作 </summary> */
+    /*  ディーラー操作  */
     private DealerLogic dealerLogic = new DealerLogic();
-    // #endregion field
+    // end field
 
-    // #region constructor
+    // start constructor
     public ServerThread(Socket socket, int playerNumber) {
         this.socket = socket;
         this.playerNumber = playerNumber;
     }
-    // #endregion constructor
+    // end constructor
 
-    // #region public function
+    // start public function
     public void run() {
         try {
             // クライアントからの受取用
@@ -152,14 +160,14 @@ class ServerThread extends Thread {
                 Server.sendForAllPlayers_Object(Server.getDealer());
             }
 
-            // // 無限ループでソケットへの入力を監視する
+            // 無限ループでソケットへの入力を監視する
             while (true) {
                 // 送られてきたメッセージ読み込み
                 String message = in.readLine();
                 if (message != null) {
                     System.out.println(Server.playerNames[playerNumber] + "：" + message);
                     switch (message) {
-                        /* <summary>カード交換</summary> */
+                        /* カード交換 */
                         case "EXCHANGE":
                             // 交換するカード情報（手札の何枚目か）
                             int changeCardNum = Integer.parseInt(in.readLine());
@@ -169,14 +177,14 @@ class ServerThread extends Thread {
                             Server.sendForAllPlayers_Integer(exchangeCard.getSuit_Integer());
                             Server.sendForAllPlayers_Integer(exchangeCard.getNumber());
                             break;
-                        /* <summary>オペレーション（行動）終了</summary> */
+                        /* オペレーション（行動）終了 */
                         case "OPERATIONEND":
                             System.out.println("行動終了だ");
                             switch (dealerLogic.opperationEnd(Server.getDealer())) {
                                 case "GAMEEND":
                                     System.out.println("ゲーム終了！");
                                     // 勝敗を決める
-                                    dealerLogic.gameEnd(Server.getDealer());
+                                    dealerLogic.judgeTheWinner(Server.getDealer());
                                     Server.sendForAllPlayers_String("GAMEEND");
                                     break;
                                 default:
@@ -212,5 +220,5 @@ class ServerThread extends Thread {
             System.out.println("切断されました " + socket.getRemoteSocketAddress());
         }
     }
-    // #endregion public function
+    // end public function
 }

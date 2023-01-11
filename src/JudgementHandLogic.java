@@ -5,22 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/*
+/**
  * 最終的な役を判定する
  */
-public class JudgementHand {
-    // #region field
-    // <summary> マジックナンバー 役の名前と強さ（小さい方が強い） </summary>
+public class JudgementHandLogic {
+    // start field
+    //  マジックナンバー 役の名前と強さ（小さい方が強い） 
     private final int ROYAL_FLUSH = 0, STRAIGHT_FLUSH = 1, FOUR_OF_A_KIND = 2, FULL_HOUSE = 3,
             FLUSH = 4, STRAIGHT = 5, THREE_OF_A_KIND = 6, TWO_PAIR = 7, A_PAIR = 8, HIGH_CARD = 9;
-    // <summary> 数位昇順にソートしたカード </summary>
+    //  数位昇順にソートしたカード 
     private List<Card> sortNumCardList = new ArrayList<Card>();
-    // <summary> 同じ数位の数 </summary>
+    //  同じ数位の数 
     private int num_of_sameNum;
-    // #endregion field
+    // end field
 
-    // #region getter setter
-
+    // start getter setter
     private List<Card> getSortNumCardList() {
         return sortNumCardList;
     }
@@ -44,10 +43,14 @@ public class JudgementHand {
     private void setNum_Of_SameNum(int num_of_sameNum) {
         this.num_of_sameNum = num_of_sameNum;
     }
-    // #endregion getter setter
+    // end getter setter
 
-    // #region function
-    /* <summary> 役の強さから役名を返す </summary> */
+    // start function
+    /**
+     * 役の強さから役名を返す
+     * @param strength
+     * @return 役名
+     */
     public String getHand_Str(int strength) {
         switch (strength) {
             case ROYAL_FLUSH:
@@ -72,7 +75,11 @@ public class JudgementHand {
         return "ハイカード";
     }
 
-    /* <summary> 役の判定をし、強さを返す </summary> */
+    /**
+     * 役の判定をし、強さを返す
+     * @param cards
+     * @return 役の強さ
+     */
     public int judgementHand(Card[] cards) {
         // 役の強さ
         int hand = HIGH_CARD;
@@ -149,7 +156,11 @@ public class JudgementHand {
         return hand;
     }
 
-    /* <summary> ロイヤルストレートフラッシュ（一種類のスーツで最も数位の高い5枚が揃った役）か判定 </summary> */
+    /**
+     * ロイヤルストレートフラッシュ（一種類のスーツで最も数位の高い5枚が揃った役）か判定
+     * @param cards
+     * @return 判定
+     */
     private boolean isRoyal_Flush(Card[] cards) {
         // 数位昇順にしてKから始まりAで終わっていたらロイヤルストレート
         List<Card> sortNumCardList = getSortNumCardList();
@@ -159,7 +170,11 @@ public class JudgementHand {
         return false;
     }
 
-    /* <summary> フラッシュ（一種類のスーツだけで構成された役）か判定 </summary> */
+    /**
+     * フラッシュ（一種類のスーツだけで構成された役）か判定
+     * @param cards
+     * @return 判定
+     */
     private boolean isFlush(Card[] cards) {
         // 一枚もマークが異らなかった場合フラッシュ
         int tempMark = cards[0].getSuit_Integer();
@@ -171,7 +186,11 @@ public class JudgementHand {
         return true;
     }
 
-    /* <summary> ストレート（5枚の数位が連続して揃った役）か判定 </summary> */
+    /**
+     * ストレート（5枚の数位が連続して揃った役）か判定
+     * @param cards
+     * @return 判定
+     */
     private boolean isStraight(Card[] cards) {
         // 数位昇順にして連番だったらストレート（右端がAの場合はロイヤスストレートしかありえないので考慮しなくてよい）
         List<Card> sortNumCardList = getSortNumCardList();
@@ -183,7 +202,11 @@ public class JudgementHand {
         return true;
     }
 
-    /* <summary> 手札を数位昇順にして返す </summary> */
+    /**
+     * 手札を数位昇順にして返す
+     * @param cards
+     * @return カードリスト
+     */
     private List<Card> sortCardNum(Card[] cards) {
         List<Card> sortCardList = Arrays.asList(cards);
         Collections.sort(sortCardList, (card1, card2) -> {
@@ -195,7 +218,7 @@ public class JudgementHand {
         });
         return sortCardList;
     }
-    // #endregion function
+    // end function
 
     /* テスト用 */
     // public static void main(String[] args) {

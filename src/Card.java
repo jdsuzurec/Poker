@@ -1,35 +1,33 @@
 
-/*
- * <summary>
+/**
  * カード情報（Model）
- * </summary>
  */
 import java.io.Serializable;
 
 public class Card implements Serializable {
-    // #region field
-    /* <summary> スーツ </summary> */
+    // start field
+    /*  スーツ  */
     private String suit_str;
     private int suit_num;
-    /* <summary> マジックナンバー（スーツ） </summary> */
+    /*  マジックナンバー（スーツ）  */
     private final int SPADE = 0, HEART = 1, DIAMOND = 2, CLOVER = 3;
-    /* <summary> 数位 </summary> */
+    /*  数位  */
     private int number;
-    /* <summary> マジックナンバー（ロイヤル） </summary> */
+    /*  マジックナンバー（ロイヤル）  */
     private final int J = 11, Q = 12, K = 13, A = 1;
-    /* <summary> 所持状況 </summary> */
+    /*  所持状況  */
     private boolean isHave;
-    // #endregion field
+    // end field
 
-    // #region constructor
+    // start constructor
     public Card(int suit_num, int number) {
         setSuit(suit_num);
         this.number = number;
         this.isHave = false;// 最初は全て手札ではない
     }
-    // #endregion constructor
+    // end constructor
 
-    // #region getter setter
+    // start getter setter
     private String getSuit() {
         return suit_str;
     }
@@ -87,11 +85,11 @@ public class Card implements Serializable {
     public void setIsHave(boolean isHave) {
         this.isHave = isHave;
     }
-    // #endregion getter setter
+    // end getter setter
 
-    // #region public function
+    // start public function
     public String toString() {
         return getSuit() + " : " + getNumber_String();
     }
-    // #endregion public function
+    // end public function
 }
