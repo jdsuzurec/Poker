@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /** 
-* サーバーと接続して、メッセージの送受信を行う
+* サーバーと接続して、メッセージの送受信を行うControllerクラス
 */
 public class Client {
     // start field

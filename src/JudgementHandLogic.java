@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 最終的な役を判定する
+ * 最終的な手札の役を判定するLogicクラス
  */
 public class JudgementHandLogic {
     // start field
@@ -47,7 +47,7 @@ public class JudgementHandLogic {
 
     // start function
     /**
-     * 役の強さから役名を返す
+     * 役の強さから役名を返す処理
      * @param strength
      * @return 役名
      */
@@ -76,7 +76,7 @@ public class JudgementHandLogic {
     }
 
     /**
-     * 役の判定をし、強さを返す
+     * 役の判定をして強さを返す処理
      * @param cards
      * @return 役の強さ
      */
@@ -157,7 +157,7 @@ public class JudgementHandLogic {
     }
 
     /**
-     * ロイヤルストレートフラッシュ（一種類のスーツで最も数位の高い5枚が揃った役）か判定
+     * ロイヤルストレートフラッシュ（一種類のスーツで最も数位の高い5枚が揃った役）か判定する処理
      * @param cards
      * @return 判定
      */
@@ -171,7 +171,7 @@ public class JudgementHandLogic {
     }
 
     /**
-     * フラッシュ（一種類のスーツだけで構成された役）か判定
+     * フラッシュ（一種類のスーツだけで構成された役）か判定する処理
      * @param cards
      * @return 判定
      */
@@ -187,7 +187,7 @@ public class JudgementHandLogic {
     }
 
     /**
-     * ストレート（5枚の数位が連続して揃った役）か判定
+     * ストレート（5枚の数位が連続して揃った役）か判定する処理
      * @param cards
      * @return 判定
      */
@@ -203,7 +203,7 @@ public class JudgementHandLogic {
     }
 
     /**
-     * 手札を数位昇順にして返す
+     * 手札を数位昇順にして返す処理
      * @param cards
      * @return カードリスト
      */

@@ -1,6 +1,6 @@
 
 /**
- * ゲーム情報（Model）
+ * ゲーム情報を扱うModelクラス
  */
 import java.io.Serializable;
 

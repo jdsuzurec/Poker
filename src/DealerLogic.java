@@ -1,7 +1,7 @@
 import java.util.Random;
 
 /**
- * Dealerを操作するクラス
+ * Dealerを操作するLogicクラス
  */
 public class DealerLogic {
     private Random random = new Random();
@@ -53,9 +53,9 @@ public class DealerLogic {
             int suit = random.nextInt(dealer.getNUM_OF_SUIT());
             int number = random.nextInt(dealer.getNUM_OF_NUM());
             Card card = dealer.getDeck()[suit][number];
-            if (!card.getIsHave()) {
+            if (!card.getIsHand()) {
                 // カードの所持状態を真にしてから返す
-                card.setIsHave(true);
+                card.setIsHand(true);
                 return card;
             }
         }
@@ -75,11 +75,10 @@ public class DealerLogic {
             newCard = dealOneCard(dealer);
         } else {
             newCard = reservedCard;
-            newCard.setIsHave(true);
+            newCard.setIsHand(true);
         }
         // 手札に新しいカードをセット
         dealer.setHand(dealer.getNum_Of_TurnPlayer(), cardNum, newCard);
-        System.out.println("新たなカード:" + newCard.toString());
         printHands(dealer);
         return newCard;
     }
@@ -90,9 +89,8 @@ public class DealerLogic {
      */
     private void leaveOneCard(Dealer dealer, int cardNum) {
         Card leaveCard = dealer.getHands()[dealer.getNum_Of_TurnPlayer()][cardNum];
-        System.out.println("返すカード:" + leaveCard.toString());
         // 返すカードの所持状態を偽にして
-        leaveCard.setIsHave(false);
+        leaveCard.setIsHand(false);
         // 山札に返す
         dealer.setDeckCard(leaveCard.getSuit_Integer(), cardNum, leaveCard);
         dealer.setHand(dealer.getNum_Of_TurnPlayer(), cardNum, null);
@@ -173,7 +171,7 @@ public class DealerLogic {
                 if (card == null) {
                     System.out.print("null, ");
                 } else {
-                    System.out.print(card.toString() + "( " + card.getIsHave() + " ), ");
+                    System.out.print(card.toString() + "( " + card.getIsHand() + " ), ");
                 }
             }
             System.out.println();
@@ -187,7 +185,7 @@ public class DealerLogic {
     // if (card == null) {
     // System.out.print("null, ");
     // } else {
-    // System.out.print(card.toString() + "( " + card.getIsHave() + " ), ");
+    // System.out.print(card.toString() + "( " + card.getIsHand() + " ), ");
     // }
     // }
     // System.out.println();

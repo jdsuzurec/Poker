@@ -16,14 +16,14 @@ public class Card implements Serializable {
     /*  マジックナンバー（ロイヤル）  */
     private final int J = 11, Q = 12, K = 13, A = 1;
     /*  所持状況  */
-    private boolean isHave;
+    private boolean isHand;
     // end field
 
     // start constructor
     public Card(int suit_num, int number) {
         setSuit(suit_num);
         this.number = number;
-        this.isHave = false;// 最初は全て手札ではない
+        this.isHand = false;// 最初は全て手札ではない
     }
     // end constructor
 
@@ -78,12 +78,12 @@ public class Card implements Serializable {
         }
     }
 
-    public boolean getIsHave() {
-        return isHave;
+    public boolean getIsHand() {
+        return isHand;
     }
 
-    public void setIsHave(boolean isHave) {
-        this.isHave = isHave;
+    public void setIsHand(boolean isHand) {
+        this.isHand = isHand;
     }
     // end getter setter
 

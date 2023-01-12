@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.io.IOException;
 
 /**
-* 複数クライアントからの接続を待ち受け、通信処理を行うスレッドを作成して起動
+* 複数クライアントからの接続を待ち受け、通信処理を行うスレッドを作成して起動するControllerクラス
 */
 public class Server {
     // start field
